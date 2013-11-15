@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
-
+import com.firebase.client.*;
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
@@ -18,7 +18,7 @@ public class MainActivity extends Activity {
     SessionAdapter sessionAdapter;
     ArrayList<Session> sessions = new ArrayList<Session>();
     // Create a reference to a Firebase location, returned as array
-    sessionRef = new Firebase("https://olinja-base.firebaseio.com/sessions");
+    Firebase sessionRef = new Firebase("https://olinja-base.firebaseio.com/sessions");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
