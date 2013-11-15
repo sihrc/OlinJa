@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">OlinQ</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="session_example_title">Diagnostic II</string>
+    <string name="session_example_ninja">ModCon Bear</string>
+    <string name="session_example_place">WH2AL</string>
+    <string name="session_example_time">Happening now! Until 10:00 PM</string>
+
+    <string name="dialog_title">Creating a Session</string>
+    <string name="dialog_input_assignment">Assignment</string>
+    <string name="dialog_hint_assignment">Input assignment name</string>
+    <string name="dialog_input_place">Place</string>
+    <string name="dialog_hint_place">Input a place.</string>
+    <string name="dialog_input_date">Date</string>
+    <string name="dialog_hint_date">Pick a Date.</string>
+    <string name="dialog_input_time">Time</string>
+    <string name="dialog_hint_time">Pick a Time.</string>
+    <string name="dialog_input_duration">Duration</string>
+    <string name="dialog_hint_duration">How many hours?</string>
+
+</resources>

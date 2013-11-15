@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:layout_marginLeft = "@dimen/dialog_marginLeft"
+    android:layout_marginRight = "@dimen/dialog_marginRight">
+    <TextView
+        android:id = "@+id/dialog_title"
+        android:layout_height = "wrap_content"
+        android:layout_width = "match_parent"
+        android:layout_alignParentTop="true"
+        android:gravity = "center"
+        android:padding = "@dimen/dialog_title"
+        android:text = "@string/dialog_title"
+        android:textSize = "@dimen/session_font"
+        android:background = "@android:color/black"
+        android:textColor="@android:color/white"/>
+
+    <TextView
+        android:id = "@+id/dialog_assignment"
+        android:layout_below = "@id/dialog_title"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text = "@string/dialog_input_assignment"
+        android:textSize = "@dimen/session_sub_font"
+        />
+
+    <EditText
+        android:id = "@+id/dialog_input_assignment"
+        android:layout_alignBottom="@id/dialog_assignment"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_alignParentRight="true"
+        android:hint="@string/dialog_hint_assignment"
+        android:textSize = "@dimen/session_sub_font"/>
+
+    <View
+        android:id = "@+id/divider_assignment"
+        android:layout_below = "@id/dialog_input_assignment"
+        android:layout_width = "match_parent"
+        android:layout_height = "@dimen/divider_height"
+        android:background = "@android:color/black"/>
+
+    <TextView
+        android:id = "@+id/dialog_place"
+        android:layout_below = "@id/divider_assignment"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text = "@string/dialog_input_place"
+        android:textSize = "@dimen/session_sub_font"
+        />
+
+    <EditText
+        android:id = "@+id/dialog_input_place"
+        android:layout_alignBottom="@id/dialog_place"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_alignParentRight="true"
+        android:hint="@string/dialog_hint_place"
+        android:textSize = "@dimen/session_sub_font"/>
+
+    <View
+        android:id = "@+id/divider_place"
+        android:layout_below = "@id/dialog_input_place"
+        android:layout_width = "match_parent"
+        android:layout_height = "@dimen/divider_height"
+        android:background = "@android:color/black"/>
+
+    <TextView
+        android:id = "@+id/dialog_date"
+        android:layout_below = "@id/divider_place"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text = "@string/dialog_input_time"
+        android:textSize = "@dimen/session_sub_font"
+        />
+
+    <EditText
+        android:id = "@+id/dialog_input_date"
+        android:inputType="date"
+        android:layout_alignBottom="@id/dialog_date"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_alignParentRight="true"
+        android:hint="@string/dialog_hint_date"
+        android:textSize = "@dimen/session_sub_font"/>
+
+    <View
+        android:id = "@+id/divider_date"
+        android:layout_below = "@id/dialog_input_date"
+        android:layout_width = "match_parent"
+        android:layout_height = "@dimen/divider_height"
+        android:background = "@android:color/black"/>
+
+    <TextView
+        android:id = "@+id/dialog_time"
+        android:inputType="time"
+        android:layout_below = "@id/divider_date"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text = "@string/dialog_input_time"
+        android:textSize = "@dimen/session_sub_font"
+        />
+
+    <EditText
+        android:id = "@+id/dialog_input_time"
+        android:layout_alignBottom="@id/dialog_time"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_alignParentRight="true"
+        android:hint="@string/dialog_hint_time"
+        android:textSize = "@dimen/session_sub_font"/>
+
+    <View
+        android:id = "@+id/divider_time"
+        android:layout_below = "@id/dialog_input_time"
+        android:layout_width = "match_parent"
+        android:layout_height = "@dimen/divider_height"
+        android:background = "@android:color/black"/>
+
+    <TextView
+        android:id = "@+id/dialog_duration"
+        android:layout_below = "@id/divider_time"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text = "@string/dialog_input_time"
+        android:textSize = "@dimen/session_sub_font"
+        />
+
+    <EditText
+        android:id = "@+id/dialog_input_duration"
+        android:layout_alignBottom="@id/dialog_duration"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_alignParentRight="true"
+        android:hint="@string/dialog_hint_time"
+        android:textSize = "@dimen/session_sub_font"/>
+
+    <View
+        android:id = "@+id/divider_duration"
+        android:layout_below = "@id/dialog_input_duration"
+        android:layout_width = "match_parent"
+        android:layout_height = "@dimen/divider_height"
+        android:background = "@android:color/black"/>
+
+    <Button
+        android:id = "@+id/dialog_cancel"
+        android:layout_height = "@dimen/button_height"
+        android:layout_width = "@dimen/button_width"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"/>
+
+</RelativeLayout>
