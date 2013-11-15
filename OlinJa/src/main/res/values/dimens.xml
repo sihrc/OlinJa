@@ -9,10 +9,15 @@
 
     <dimen name="dialog_marginLeft">5dp</dimen>
     <dimen name="dialog_marginRight">5dp</dimen>
-    <dimen name="dialog_title">10dp</dimen>
+    <dimen name="dialog_title">1dp</dimen>
+    <dimen name="dialog_row_height">30dp</dimen>
 
     <dimen name="divider_height">1dp</dimen>
+    <dimen name="divider_margin">5dp</dimen>
+    <dimen name="button_divider">50dp</dimen>
+    <dimen name="divider_top">5dp</dimen>
 
-    <dimen name="button_width">30dp</dimen>
-    <dimen name="button_height">30dp</dimen>
+
+    <dimen name="button_width">200dp</dimen>
+    <dimen name="button_height">60dp</dimen>
     </resources>

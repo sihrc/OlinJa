@@ -20,5 +20,7 @@
     <string name="dialog_hint_time">Pick a Time.</string>
     <string name="dialog_input_duration">Duration</string>
     <string name="dialog_hint_duration">How many hours?</string>
-
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_create">Create</string>
+    <string name="dialog_edit">Edit</string>
 </resources>

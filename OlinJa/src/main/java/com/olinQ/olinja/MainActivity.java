@@ -17,6 +17,7 @@ public class MainActivity extends Activity {
     ListView sessionList;
     SessionAdapter sessionAdapter;
     ArrayList<Session> sessions = new ArrayList<Session>();
+
     // Create a reference to a Firebase location, returned as array
     Firebase sessionRef = new Firebase("https://olinja-base.firebaseio.com/sessions");
 
@@ -63,7 +64,6 @@ public class MainActivity extends Activity {
 
     //Dialog for adding a session
     public void showAddSessionDialog(){
-
     }
 
     @Override
