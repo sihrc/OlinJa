@@ -12,12 +12,14 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import com.firebase.client.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends Activity {
     ListView sessionList;
     SessionAdapter sessionAdapter;
     ArrayList<Session> sessions = new ArrayList<Session>();
 
+    String user;
     // Create a reference to a Firebase location, returned as array
     Firebase sessionRef = new Firebase("https://olinja-base.firebaseio.com/sessions");
 
@@ -25,6 +27,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Set User Name
+        user = "Chris"; //Hard Coded username //Needs implementation
 
         grabAllSessions();
         populateListView();
@@ -64,6 +69,8 @@ public class MainActivity extends Activity {
 
     //Dialog for adding a session
     public void showAddSessionDialog(){
+        SessionDialog showDialog = new SessionDialog(MainActivity.this, user);
+        showDialog.show();
     }
 
     @Override

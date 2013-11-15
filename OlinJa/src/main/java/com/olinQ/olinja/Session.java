@@ -11,14 +11,15 @@ public class Session {
     final public int NEEDS_CHECKOFF = 1;
     final public int NEEDS_HELP = 2;
 
-    String assignment,ninja,place,time,duration;
+    String assignment,ninja,place,time,duration, date;
     HashMap<String, Integer> checkOffList;
 
     //public constructor
-    public Session(String assignment, String ninja, String place, String time, String duration){
+    public Session(String assignment, String ninja, String place, String date, String time, String duration){
         this.assignment = assignment;
         this.ninja = ninja;
         this.place = place;
+        this.date = date;
         this.time = time;
         this.duration = duration;
         this.checkOffList = new HashMap<String, Integer>();
