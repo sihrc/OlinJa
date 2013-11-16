@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="firebase">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/OlinJa/src/main/libs/firebase.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
