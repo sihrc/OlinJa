@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import com.firebase.client.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MainActivity extends Activity {
     ListView sessionList;
@@ -80,6 +79,21 @@ public class MainActivity extends Activity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_addSession) {
+            showAddSessionDialog();
+            grabAllSessions();
+            refreshListView();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     //Generate Notifications
     public void notification() {
         //Sight small icon
@@ -96,18 +110,5 @@ public class MainActivity extends Activity {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         mNotificationManager.notify(0, mBuilder.build());
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_addSession) {
-            showAddSessionDialog();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
