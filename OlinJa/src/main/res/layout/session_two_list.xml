@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/lower_linear_layout"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/main">
+
+        <RelativeLayout
+            android:layout_below="@+id/leftside"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="190dip"
+            android:layout_height="fill_parent"
+            android:layout_alignParentLeft="true">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="#669900"
+                android:id="@+id/topleft">
+
+                <TextView
+                    android:padding="5dip"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:textSize="22sp"
+                    android:text="Check-Off"
+                    android:id="@+id/Checkoff" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/checkofflist"
+                android:textColor="#ffffff"
+                android:layout_width="fill_parent"
+                android:background="#99CC00"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/topleft"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_below="@+id/rightside"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="195dip"
+            android:layout_height="fill_parent"
+            android:layout_alignParentLeft="true">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="#0099CC"
+                android:id="@+id/topright">
+
+                <TextView
+                    android:padding="5dip"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:textSize="22sp"
+                    android:text="I Need Help!"
+                    android:id="@+id/helpme" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/helpmelist"
+                android:textColor="#ffffff"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/topright"
+                android:background="#33B5E5"
+                />
+        </RelativeLayout>
+
+    </LinearLayout>
+</LinearLayout>
