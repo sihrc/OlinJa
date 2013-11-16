@@ -30,4 +30,5 @@ proguard/
 # Ignore gradle files
 .gradle/
 build/
+.idea/ 
 
