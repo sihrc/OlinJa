@@ -1,3 +1,4 @@
+/*
 package com.olinQ.olinja;
 
 import com.firebase.client.DataSnapshot;
@@ -9,10 +10,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+*/
 /**
  * Created by kaustin on 11/14/13.
  * Handles all Firebase ajax and communication
- */
+ *//*
+
 public class FireConnect {
 
     ArrayList<Session> allSessions;
@@ -82,3 +85,4 @@ public class FireConnect {
     }
 
 }
+*/

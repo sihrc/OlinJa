@@ -9,9 +9,9 @@ import java.util.HashMap;
  */
 public class Session {
     String assignment,ninja,place,time,duration, date, id;
-    ArrayList<String> check;
-    ArrayList<String> checked;
-    ArrayList<String> help;
+    ArrayList<String> check = new ArrayList<String>();
+    ArrayList<String> checked = new ArrayList<String>();;
+    ArrayList<String> help = new ArrayList<String>();;
 
     //public Constructor
     public Session(String assignment, String ninja, String place, String date, String time, String duration){
