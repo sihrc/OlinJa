@@ -55,18 +55,21 @@ public class MainActivity extends Activity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 FirebaseSession newSession = dataSnapshot.getValue(FirebaseSession.class);
                 MainActivity.this.sessions.put(newSession.id, newSession.toSession());
+                refreshListView();
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 FirebaseSession newSession = dataSnapshot.getValue(FirebaseSession.class);
                 MainActivity.this.sessions.put(newSession.id, newSession.toSession());
+                refreshListView();
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 FirebaseSession newSession = dataSnapshot.getValue(FirebaseSession.class);
                 MainActivity.this.sessions.remove(newSession.id);
+                refreshListView();
             }
 
             @Override
