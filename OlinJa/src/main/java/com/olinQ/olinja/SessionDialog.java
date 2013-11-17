@@ -59,7 +59,7 @@ public class SessionDialog extends AlertDialog {
                 );
 
                 addSessionToServer(newSession);
-                Toast.makeText(getOwnerActivity(), "Session created! You're such a nice person!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Session created! You're such a nice person!", Toast.LENGTH_SHORT).show();
             }
         });
     }
