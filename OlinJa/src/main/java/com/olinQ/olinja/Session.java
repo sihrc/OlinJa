@@ -1,6 +1,7 @@
 package com.olinQ.olinja;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -11,30 +12,24 @@ public class Session {
     final public int NEEDS_CHECKOFF = 1;
     final public int NEEDS_HELP = 2;
 
-    String assignment,ninja,place,time,duration, date;
-    HashMap<String, Integer> checkOffList;
+    int id, duration;
+    String assignment,ninja,place,time;
+    ArrayList<String>[] checkOffList;
 
     //public constructor
-    public Session(String assignment, String ninja, String place, String date, String time, String duration){
+    public Session(int id, String assignment, String ninja, String place, String time, int duration, ArrayList<String>[] checkOffList){
+        this.id = id;
         this.assignment = assignment;
         this.ninja = ninja;
         this.place = place;
-        this.date = date;
         this.time = time;
         this.duration = duration;
-        this.checkOffList = new HashMap<String, Integer>();
+        this.checkOffList = checkOffList;
     }
 
     //Public Methods
-    //Import a HashMap
-    public void setCheckOffList(String[] check, String[] help, String[] checked){
-        for (String user: check){this.addToQueue(user);}
-        for (String user: help){this.setNeedHelp(user);}
-        for (String user: checked){this.checkOff(user);}
-    }
-
     //Check someone off
-    public void checkOff(String user){
+    /*public void checkOff(String user){
         this.checkOffList.put(user, this.CHECKED_OFF);
     }
 
@@ -46,5 +41,5 @@ public class Session {
     //Add someone to the need help queue
     public void setNeedHelp(String user){
         this.checkOffList.put(user, this.NEEDS_HELP);
-    }
+    }*/
 }
