@@ -57,7 +57,6 @@ public class SessionDialog extends AlertDialog {
                     time.getText().toString(),
                     duration.getText().toString()
                 );
-
                 addSessionToServer(newSession);
                 Toast.makeText(getContext(), "Session created! You're such a nice person!", Toast.LENGTH_SHORT).show();
             }

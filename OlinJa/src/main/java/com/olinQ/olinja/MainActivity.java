@@ -19,12 +19,17 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MainActivity extends Activity {
+    //For managing the list view of sessions
     ListView sessionList;
     SessionAdapter sessionAdapter;
+
+    //Holding the sessions by Id and session
     LinkedHashMap<String,Session> sessions = new LinkedHashMap<String, Session>();
 
+    //Holding the arraylist of sessions for session adapter
     ArrayList<Session> sessionHolder = new ArrayList<Session>();
     String user;
+
     // Create a reference to a Firebase location, returned as array
     Firebase sessionRef = new Firebase("https://olinja-base.firebaseio.com/sessions");
 

@@ -55,7 +55,6 @@ public class Session {
         this.help = values;
     }
 
-
     public FirebaseSession toFireBaseSession(){
         return new FirebaseSession(this.assignment, this.ninja, this.place, this.time, this.duration, this.date, this.check.toString(), this.help.toString(), this.checked.toString());
     }
