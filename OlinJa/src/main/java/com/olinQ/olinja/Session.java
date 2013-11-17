@@ -27,8 +27,10 @@ public class Session {
 
     //Public Methods
     //Import a HashMap
-    public void setCheckOffList(HashMap<String, Integer> checkOffList){
-        this.checkOffList = checkOffList;
+    public void setCheckOffList(String[] check, String[] help, String[] checked){
+        for (String user: check){this.addToQueue(user);}
+        for (String user: help){this.setNeedHelp(user);}
+        for (String user: checked){this.checkOff(user);}
     }
 
     //Check someone off

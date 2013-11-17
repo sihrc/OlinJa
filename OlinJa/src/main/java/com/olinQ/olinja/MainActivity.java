@@ -7,11 +7,14 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import com.firebase.client.*;
+
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MainActivity extends Activity {
     ListView sessionList;
@@ -44,14 +47,32 @@ public class MainActivity extends Activity {
     //Grab a list of sessions from the database
     public void grabAllSessions(){
         //sessions = (Database Call)
-
-        //TEST example
-        String url = "https://SampleChat.firebaseIO-demo.com/users/fred/name/first";
-        Firebase dataRef = new Firebase(url);
-        dataRef.addValueEventListener(new ValueEventListener() {
+        sessionRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                System.out.println("Fred's first name is " + snapshot.getValue());
+                Iterable<DataSnapshot> array = snapshot.getChildren();
+                if (array == null)
+                    Log.i("FireBaseClient", "MainActivity - Pulling Sessions - Does not exist.");
+                else {
+                    Log.i("FireBaseClient", "MainActivity - Pulling Sessions:\n" + array);
+                    sessions.clear();
+                    for (DataSnapshot child: snapshot.getChildren()){
+                        Object value = child.getValue();
+                        Log.i("FireBaseClient", "MainActivity - Pulling Children:\n" + value);
+                        Session newSession = new Session (
+                                getFireBaseString(value, "assignment"),
+                                getFireBaseString(value, "ninja"),
+                                getFireBaseString(value, "place"),
+                                getFireBaseString(value, "date"),
+                                getFireBaseString(value, "time"),
+                                getFireBaseString(value, "duration"));
+                        newSession.setCheckOffList(getFireBaseArray(value, "check"),
+                                getFireBaseArray(value, "help"),
+                                getFireBaseArray(value, "checked"));
+                        sessions.add(newSession);
+                    }
+                }
+                refreshListView();
             }
 
             @Override
@@ -60,9 +81,21 @@ public class MainActivity extends Activity {
             }
         });
     }
+    //Helper to get FireBase String Fields
+    public String getFireBaseString(Object value, String field){
+        return (String)((Map)value).get(field);
+    }
 
+    //Helper to get FireBase A<String> Fields
+    public String[] getFireBaseArray(Object value, String field){
+        ArrayList<String> stringArray = (ArrayList<String>)((Map)value).get(field);
+        Log.i("FireBaseClient", "MainActivity - Pulling ArrayChild:\n" + stringArray);
+        return stringArray.toArray(new String[stringArray.size()]);
+    }
     //Repopulate and refresh the list view
     public void refreshListView(){
+        sessionAdapter.clear();
+        sessionAdapter.addAll(sessions);
         sessionAdapter.notifyDataSetChanged();
     }
 
