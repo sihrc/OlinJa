@@ -33,8 +33,9 @@ public class MainActivity extends Activity {
         //Set User Name
         user = "Chris"; //Hard Coded username //Needs implementation
 
-        grabAllSessions();
         populateListView();
+        grabAllSessions();
+
     }
 
     //Initially Populates the session list view
@@ -46,7 +47,6 @@ public class MainActivity extends Activity {
 
     //Grab a list of sessions from the database
     public void grabAllSessions(){
-        //sessions = (Database Call)
         sessionRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -54,11 +54,11 @@ public class MainActivity extends Activity {
                 if (array == null)
                     Log.i("FireBaseClient", "MainActivity - Pulling Sessions - Does not exist.");
                 else {
-                    Log.i("FireBaseClient", "MainActivity - Pulling Sessions:\n" + array);
-                    sessions.clear();
+                    //Log.i("FireBaseClient", "MainActivity - Pulling Sessions:\n" + array);
+                    MainActivity.this.sessions.clear();
                     for (DataSnapshot child: snapshot.getChildren()){
                         Object value = child.getValue();
-                        Log.i("FireBaseClient", "MainActivity - Pulling Children:\n" + value);
+                        //Log.i("FireBaseClient", "MainActivity - Pulling Children:\n" + value);
                         Session newSession = new Session (
                                 getFireBaseString(value, "assignment"),
                                 getFireBaseString(value, "ninja"),
@@ -69,10 +69,11 @@ public class MainActivity extends Activity {
                         newSession.setCheckOffList(getFireBaseArray(value, "check"),
                                 getFireBaseArray(value, "help"),
                                 getFireBaseArray(value, "checked"));
-                        sessions.add(newSession);
+                        MainActivity.this.sessions.add(newSession);
                     }
+                    //Log.i("Refreshing Sessions", "Pull Size: " + MainActivity.this.sessions.size());
+                    refreshListView();
                 }
-                refreshListView();
             }
 
             @Override
@@ -89,14 +90,16 @@ public class MainActivity extends Activity {
     //Helper to get FireBase A<String> Fields
     public String[] getFireBaseArray(Object value, String field){
         ArrayList<String> stringArray = (ArrayList<String>)((Map)value).get(field);
-        Log.i("FireBaseClient", "MainActivity - Pulling ArrayChild:\n" + stringArray);
+        //Log.i("FireBaseClient", "MainActivity - Pulling ArrayChild:\n" + stringArray);
         return stringArray.toArray(new String[stringArray.size()]);
     }
+
     //Repopulate and refresh the list view
     public void refreshListView(){
-        sessionAdapter.clear();
-        sessionAdapter.addAll(sessions);
+        //Log.i("Refreshing Sessions", sessions.toString());
+        //Log.i("Refreshing Sessions", "Size: " + MainActivity.this.sessions.size());
         sessionAdapter.notifyDataSetChanged();
+        sessionList.invalidate();
     }
 
     //Dialog for adding a session
