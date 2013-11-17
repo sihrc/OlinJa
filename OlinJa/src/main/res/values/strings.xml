@@ -23,4 +23,7 @@
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_create">Create</string>
     <string name="dialog_edit">Edit</string>
+
+    <string name="session_title_checkoff">CheckOff!</string>
+    <string name="session_title_helpMe">HelpMe!</string>
 </resources>
