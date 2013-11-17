@@ -11,12 +11,17 @@ import java.util.Map;
 
 /**
  * Created by kaustin on 11/14/13.
+ * Handles all Firebase ajax and communication
  */
 public class FireConnect {
-    //Handles all Firebase ajax and communication
 
-    public void getSessions(){
-        //Gets the session array
+    ArrayList<Session> allSessions;
+
+    public void makeSessions(){
+
+        allSessions = new ArrayList<Session>();
+
+        //Gets the session array from the server
         String url = "https://olinja-base.firebaseio.com";
         Firebase dataRef = new Firebase(url);
 
@@ -27,35 +32,16 @@ public class FireConnect {
                 if (value == null) {
                     System.out.println("User sessions doesn't exist");
                 } else {
-                    ArrayList<Object> allSessions = (ArrayList<Object>)((Map)value).get("sessions");
+
+                    ArrayList<Object> fireSessions = (ArrayList<Object>)((Map)value).get("sessions");
                     //Get each session from the server
-                    for (int i=0; i < allSessions.size(); i++){
 
+                    for (int i=0; i < fireSessions.size(); i++){
+                        //Make Session object
+                        Session s = extractSession(i, fireSessions.get(i));
+                        //Add it to all Sessions
+                        allSessions.add(s);
                     }
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError E) {
-                System.err.println("Listener was cancelled");
-            }
-        });
-    }
-
-    public void getSession(int id){
-        String url = "https://olinja-base.firebaseio.com/sessions/" + id;
-        Firebase dataRef = new Firebase(url);
-
-        dataRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                Object value = snapshot.getValue();
-                if (value == null) {
-                    System.out.println("User julie doesn't exist");
-                } else {
-                    String firstName = (String)((Map)value).get("first");
-                    String lastName = (String)((Map)value).get("last");
-                    System.out.println("User julie's full name is: " + firstName + " " + lastName);
                 }
             }
 
@@ -78,4 +64,21 @@ public class FireConnect {
 
         return s;
     }
+
+    public ArrayList<Session> getAllSessions(){
+        return allSessions;
+    }
+
+    public Session getOneSession(int id){
+        return allSessions.get(id);
+    }
+
+    public void postNewSession(){
+        //MAKING A NEW SESSION AND PuSHING IT TO THE SERVER
+    }
+
+    public void postCheckOffUpdate(int i){
+        //With the given assignment id, pushes an updated version of the CheckOff to the server
+    }
+
 }

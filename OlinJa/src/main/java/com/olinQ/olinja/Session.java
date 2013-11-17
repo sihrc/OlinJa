@@ -8,9 +8,6 @@ import java.util.HashMap;
  * Created by chris on 11/13/13.
  */
 public class Session {
-    final public int CHECKED_OFF = 0;
-    final public int NEEDS_CHECKOFF = 1;
-    final public int NEEDS_HELP = 2;
 
     int id, duration;
     String assignment,ninja,place,time;
@@ -27,7 +24,20 @@ public class Session {
         this.checkOffList = checkOffList;
     }
 
-    //Public Methods
+    //Public Return Methods
+    public ArrayList<String> getCheckedOff(){
+        return this.checkOffList[0];
+    }
+
+    public ArrayList<String> getNeedsCheckOff(){
+        return this.checkOffList[1];
+    }
+
+    public ArrayList<String> getNeedsHelp(){
+        return this.checkOffList[2];
+    }
+
+
     //Check someone off
     /*public void checkOff(String user){
         this.checkOffList.put(user, this.CHECKED_OFF);
