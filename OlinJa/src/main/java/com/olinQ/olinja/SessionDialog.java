@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.firebase.client.Firebase;
+
 import java.util.HashMap;
 
 /**
@@ -63,6 +65,10 @@ public class SessionDialog extends AlertDialog {
     }
 
     public void addSessionToServer(Session session){
-        //Needs implementation
+        Firebase sessionRef = new Firebase("https://olinja-base.firebaseio.com/sessions");
+        Firebase pushRef = sessionRef.push();
+
+        session.setId(pushRef.getName());
+        pushRef.setValue(session.toFireBaseSession());
     }
 }

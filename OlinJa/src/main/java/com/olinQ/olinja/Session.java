@@ -1,20 +1,19 @@
 package com.olinQ.olinja;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * Created by chris on 11/13/13.
  */
 public class Session {
-    final public int CHECKED_OFF = 0;
-    final public int NEEDS_CHECKOFF = 1;
-    final public int NEEDS_HELP = 2;
+    String assignment,ninja,place,time,duration, date, id;
+    ArrayList<String> check;
+    ArrayList<String> checked;
+    ArrayList<String> help;
 
-    String assignment,ninja,place,time,duration, date;
-    HashMap<String, Integer> checkOffList;
-
-    //public constructor
+    //public Constructor
     public Session(String assignment, String ninja, String place, String date, String time, String duration){
         this.assignment = assignment;
         this.ninja = ninja;
@@ -22,29 +21,42 @@ public class Session {
         this.date = date;
         this.time = time;
         this.duration = duration;
-        this.checkOffList = new HashMap<String, Integer>();
     }
 
     //Public Methods
-    //Import a HashMap
-    public void setCheckOffList(String[] check, String[] help, String[] checked){
-        for (String user: check){this.addToQueue(user);}
-        for (String user: help){this.setNeedHelp(user);}
-        for (String user: checked){this.checkOff(user);}
+    public void setAssignment(String value){
+        this.assignment = value;
+    }
+    public void setNinja(String value){
+        this.ninja = value;
+    }
+    public void setPlace(String value){
+        this.place = value;
+    }
+    public void setTime(String value){
+        this.time = value;
+    }
+    public void setDuration(String value){
+        this.duration = value;
+    }
+    public void setDate(String value){
+        this.date = value;
+    }
+    public void setId(String value){
+        this.id = value;
+    }
+    public void setCheck(ArrayList<String> values){
+        this.check = values;
+    }
+    public void setChecked(ArrayList<String> values){
+        this.checked = values;
+    }
+    public void setHelp(ArrayList<String> values){
+        this.help = values;
     }
 
-    //Check someone off
-    public void checkOff(String user){
-        this.checkOffList.put(user, this.CHECKED_OFF);
-    }
 
-    //Add someone to the queue
-    public void addToQueue(String user){
-        this.checkOffList.put(user, this.NEEDS_CHECKOFF);
-    }
-
-    //Add someone to the need help queue
-    public void setNeedHelp(String user){
-        this.checkOffList.put(user, this.NEEDS_HELP);
+    public FirebaseSession toFireBaseSession(){
+        return new FirebaseSession(this.assignment, this.ninja, this.place, this.time, this.duration, this.date, this.check.toString(), this.help.toString(), this.checked.toString());
     }
 }

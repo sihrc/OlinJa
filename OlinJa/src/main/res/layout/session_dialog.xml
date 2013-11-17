@@ -87,7 +87,7 @@
         android:layout_width = "wrap_content"
         android:layout_height = "@dimen/dialog_row_height"
         android:layout_alignParentLeft="true"
-        android:text = "@string/dialog_input_time"
+        android:text = "@string/dialog_input_date"
         android:textSize = "@dimen/session_sub_font"
         />
 
@@ -148,7 +148,7 @@
         android:layout_width = "wrap_content"
         android:layout_height = "@dimen/dialog_row_height"
         android:layout_alignParentLeft="true"
-        android:text = "@string/dialog_input_time"
+        android:text = "@string/dialog_input_duration"
         android:textSize = "@dimen/session_sub_font"
         />
 
@@ -158,7 +158,7 @@
         android:layout_height = "@dimen/dialog_row_height"
         android:layout_width="fill_parent"
         android:layout_alignLeft="@id/dialog_input_assignment"
-        android:hint="@string/dialog_hint_time"
+        android:hint="@string/dialog_hint_duration"
         android:textSize = "@dimen/session_sub_font"/>
 
     <View

@@ -14,13 +14,16 @@ import android.widget.ListView;
 import com.firebase.client.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MainActivity extends Activity {
     ListView sessionList;
     SessionAdapter sessionAdapter;
-    ArrayList<Session> sessions = new ArrayList<Session>();
+    LinkedHashMap<String,Session> sessions = new LinkedHashMap<String, Session>();
 
+    ArrayList<Session> sessionHolder = new ArrayList<Session>();
     String user;
     // Create a reference to a Firebase location, returned as array
     Firebase sessionRef = new Firebase("https://olinja-base.firebaseio.com/sessions");
@@ -32,7 +35,6 @@ public class MainActivity extends Activity {
 
         //Set User Name
         user = "Chris"; //Hard Coded username //Needs implementation
-
         populateListView();
         grabAllSessions();
 
@@ -40,64 +42,50 @@ public class MainActivity extends Activity {
 
     //Initially Populates the session list view
     private void populateListView(){
-        sessionAdapter = new SessionAdapter(MainActivity.this, sessions);
+        sessionHolder.addAll(MainActivity.this.sessions.values());
+        sessionAdapter = new SessionAdapter(this,sessionHolder);
         sessionList = (ListView) findViewById(R.id.session_list);
         sessionList.setAdapter(sessionAdapter);
     }
 
     //Grab a list of sessions from the database
     public void grabAllSessions(){
-        sessionRef.addValueEventListener(new ValueEventListener() {
+        sessionRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                Iterable<DataSnapshot> array = snapshot.getChildren();
-                if (array == null)
-                    Log.i("FireBaseClient", "MainActivity - Pulling Sessions - Does not exist.");
-                else {
-                    //Log.i("FireBaseClient", "MainActivity - Pulling Sessions:\n" + array);
-                    MainActivity.this.sessions.clear();
-                    for (DataSnapshot child: snapshot.getChildren()){
-                        Object value = child.getValue();
-                        //Log.i("FireBaseClient", "MainActivity - Pulling Children:\n" + value);
-                        Session newSession = new Session (
-                                getFireBaseString(value, "assignment"),
-                                getFireBaseString(value, "ninja"),
-                                getFireBaseString(value, "place"),
-                                getFireBaseString(value, "date"),
-                                getFireBaseString(value, "time"),
-                                getFireBaseString(value, "duration"));
-                        newSession.setCheckOffList(getFireBaseArray(value, "check"),
-                                getFireBaseArray(value, "help"),
-                                getFireBaseArray(value, "checked"));
-                        MainActivity.this.sessions.add(newSession);
-                    }
-                    //Log.i("Refreshing Sessions", "Pull Size: " + MainActivity.this.sessions.size());
-                    refreshListView();
-                }
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                FirebaseSession newSession = dataSnapshot.getValue(FirebaseSession.class);
+                MainActivity.this.sessions.put(newSession.id, newSession.toSession());
             }
 
             @Override
-            public void onCancelled(FirebaseError E) {
-                System.err.println("Listener was cancelled");
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                FirebaseSession newSession = dataSnapshot.getValue(FirebaseSession.class);
+                MainActivity.this.sessions.put(newSession.id, newSession.toSession());
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                FirebaseSession newSession = dataSnapshot.getValue(FirebaseSession.class);
+                MainActivity.this.sessions.remove(newSession.id);
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
             }
         });
-    }
-    //Helper to get FireBase String Fields
-    public String getFireBaseString(Object value, String field){
-        return (String)((Map)value).get(field);
-    }
-
-    //Helper to get FireBase A<String> Fields
-    public String[] getFireBaseArray(Object value, String field){
-        ArrayList<String> stringArray = (ArrayList<String>)((Map)value).get(field);
-        //Log.i("FireBaseClient", "MainActivity - Pulling ArrayChild:\n" + stringArray);
-        return stringArray.toArray(new String[stringArray.size()]);
     }
 
     //Repopulate and refresh the list view
     public void refreshListView(){
         //Log.i("Refreshing Sessions", sessions.toString());
         //Log.i("Refreshing Sessions", "Size: " + MainActivity.this.sessions.size());
+        sessionHolder.clear();
+        sessionHolder.addAll(sessions.values());
         sessionAdapter.notifyDataSetChanged();
         sessionList.invalidate();
     }
