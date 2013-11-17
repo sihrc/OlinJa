@@ -9,6 +9,7 @@ import java.util.Arrays;
 public class FirebaseSession {
     String assignment,ninja,place,time,duration, date, check, help, checked, id;
 
+    public FirebaseSession (){}
     public FirebaseSession (String assignment,String ninja,String place,String time,String duration,String date,String check,String help,String checked){
         this.assignment = assignment;
         this.ninja = ninja;
@@ -25,10 +26,19 @@ public class FirebaseSession {
     public Session toSession(){
         Session newSession = new Session(this.assignment, this.ninja, this.place, this.date, this.time, this.duration);
         newSession.setId(this.id);
-        newSession.setCheck(new ArrayList<String>(Arrays.asList(this.check.substring(1, -1).split(","))));
-        newSession.setChecked(new ArrayList<String>(Arrays.asList(this.checked.substring(1, -1).split(","))));
-        newSession.setHelp((new ArrayList<String>(Arrays.asList(this.help.substring(1, -1).split(",")))));
+        newSession.setCheck(getArrayList(this.check));
+        newSession.setChecked(getArrayList(this.checked));
+        newSession.setHelp(getArrayList(this.help));
         return newSession;
+    }
+
+    public ArrayList<String> getArrayList(String value){
+        if (value.length() > 2){
+            return new ArrayList<String> (Arrays.asList(this.check.substring(1,-1).split(",")));
+        }
+        else {
+            return new ArrayList<String>();
+        }
     }
     //Public Get Methods as required by Firebase
     public String getAssignment(){
