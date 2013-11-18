@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
                 if (connected)
                     Toast.makeText(MainActivity.this, "Connected to OlinJa!", Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(MainActivity.this, "Oh no! I'm Lost!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Oh no! I can't find the internet!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
