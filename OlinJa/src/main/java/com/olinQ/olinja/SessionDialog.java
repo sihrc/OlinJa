@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -28,8 +29,8 @@ public class SessionDialog extends AlertDialog {
     String user;
     Context context;
 
-    EditText assignment, place, date, time, duration;
-
+    EditText assignment, place;
+    TextView date,time,duration;
     public SessionDialog(Context context, String user){
         super(context);
         setContentView(R.layout.session_dialog);
@@ -40,9 +41,9 @@ public class SessionDialog extends AlertDialog {
     public void onCreate(Bundle savedInstanceState){
         assignment = (EditText) findViewById(R.id.dialog_input_assignment);
         place = (EditText) findViewById(R.id.dialog_input_place);
-        date = (EditText) findViewById(R.id.dialog_input_date);
-        time = (EditText) findViewById(R.id.dialog_input_time);
-        duration = (EditText) findViewById(R.id.dialog_input_duration);
+        date = (TextView) findViewById(R.id.dialog_input_date);
+        time = (TextView) findViewById(R.id.dialog_input_time);
+        duration = (TextView) findViewById(R.id.dialog_input_duration);
 
         Button cancel = (Button) findViewById(R.id.dialog_cancel);
         Button create = (Button) findViewById(R.id.dialog_create);
@@ -76,7 +77,16 @@ public class SessionDialog extends AlertDialog {
     }
 
     public void setupDateTimePickers(){
+        //Making the EditText essentially a button...
+        date.setFocusable(false);   time.setFocusable(false);  duration.setFocusable(false);
+        date.setClickable(true);    time.setClickable(true);   duration.setClickable(true);
         //Date Picker for date
+        setDatePicker();
+        setTimePicker();
+        setDurationPicker();
+    }
+    //Set the onClickListener for date EditText
+    public void setDatePicker(){
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,6 +108,9 @@ public class SessionDialog extends AlertDialog {
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+    }
+    //Set the onClickListener for time EditText
+    public void setTimePicker(){
         //Time picker for time
         time.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,9 +137,11 @@ public class SessionDialog extends AlertDialog {
                 timePicker.show();
             }
         });
+    }
+    //Set the onClickListener for duration EditText
+    public void setDurationPicker(){
 
     }
-
     public void addSessionToServer(Session session){
         Firebase sessionRef = new Firebase("https://olinja-base.firebaseio.com/sessions");
         Firebase pushRef = sessionRef.push();
