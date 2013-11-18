@@ -8,18 +8,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.firebase.client.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Random;
 
 public class MainActivity extends Activity {
@@ -29,6 +26,9 @@ public class MainActivity extends Activity {
 
     //Username
     String username;
+
+    //Connectivity
+    ValueEventListener connected;
 
     //Firebase URL Location
     String FIREBASE_URL = "https://olinja-base.firebaseio.com";
@@ -64,11 +64,31 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent in = new Intent (MainActivity.this, SessionActivity.class);
-                in.putExtra("Id", ((FirebaseSession)sessionAdapter.getItem(position)).id);
+                in.putExtra("Id", ((Session)sessionAdapter.getItem(position)).id);
                 startActivity(in);
             }
         });
 
+        //Connectivity Check
+        connected = sessionRef.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean connected = (Boolean)dataSnapshot.getValue();
+                if (connected)
+                    Toast.makeText(MainActivity.this, "Connected to OlinJa!", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(MainActivity.this, "Oh no! I'm Lost!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {}
+        });
+    }
+    @Override
+    public void onStop(){
+        super.onStop();
+        sessionRef.getRoot().child(".info/connected").removeEventListener(connected);
+        sessionAdapter.cleanup();
     }
 
     //Dialog for adding a session
@@ -95,24 +115,6 @@ public class MainActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    //Generate Notifications
-    public void notification() {
-        //Sight small icon
-        Notification.Builder mBuilder = new Notification.Builder(this)
-                .setContentTitle("Rain Check")
-                .setContentText("Go check the weather!")
-                .setAutoCancel(true);
-        // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, MainActivity.class);
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, 0);
-
-
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        mNotificationManager.notify(0, mBuilder.build());
     }
 
     //Setup Username

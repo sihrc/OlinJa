@@ -29,7 +29,7 @@ public class SessionDialog extends AlertDialog {
         this.context = context;
         this.user = user;
     }
-
+    /*assignment,ninja,place,time,duration, date, check, help, checked, id*/
     public void onCreate(Bundle savedInstanceState){
         assignment = (EditText) findViewById(R.id.dialog_input_assignment);
         place = (EditText) findViewById(R.id.dialog_input_place);
@@ -53,9 +53,12 @@ public class SessionDialog extends AlertDialog {
                     assignment.getText().toString(),
                     user,
                     place.getText().toString(),
-                    date.getText().toString(),
                     time.getText().toString(),
-                    duration.getText().toString()
+                    duration.getText().toString(),
+                    date.getText().toString(),
+                    "",
+                    "",
+                    ""
                 );
                 addSessionToServer(newSession);
                 Toast.makeText(getContext(), "Session created! You're such a nice person!", Toast.LENGTH_SHORT).show();
@@ -68,6 +71,6 @@ public class SessionDialog extends AlertDialog {
         Firebase pushRef = sessionRef.push();
 
         session.setId(pushRef.getName());
-        pushRef.setValue(session.toFireBaseSession());
+        pushRef.setValue(session);
     }
 }

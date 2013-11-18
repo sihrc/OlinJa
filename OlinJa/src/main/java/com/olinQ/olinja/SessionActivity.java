@@ -1,6 +1,11 @@
+/*
 package com.olinQ.olinja;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -11,9 +16,11 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+*/
 /**
  * Created by chris on 11/17/13.
- */
+ *//*
+
 public class SessionActivity extends Activity {
     Session curSession;
     ListView checkoffList, helpmeList;
@@ -30,7 +37,7 @@ public class SessionActivity extends Activity {
         sessionRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                SessionActivity.this.curSession = dataSnapshot.getValue(FirebaseSession.class).toSession();
+                SessionActivity.this.curSession = dataSnapshot.getValue(Session.class).toSession();
                 populateListViews();
             }
 
@@ -50,4 +57,23 @@ public class SessionActivity extends Activity {
         checkoffList.setAdapter(checkoffAdapter);
         helpmeList.setAdapter(helpmeAdapter);
     }
+
+    //Generate Notifications
+    public void notification() {
+        //Sight small icon
+        Notification.Builder mBuilder = new Notification.Builder(this)
+                .setContentTitle("OlinJa Session")
+                .setContentText("It's almost your turn!")
+                .setAutoCancel(true);
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, 0);
+
+
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(0, mBuilder.build());
+    }
 }
+*/
