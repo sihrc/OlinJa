@@ -1,15 +1,9 @@
 package com.olinQ.olinja;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,14 +15,11 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
-import java.util.Random;
-
 /**
  * Created by chris on 11/17/13.
  */
 
 public class SessionActivity extends Activity {
-    Session curSession;
     ListView checkoffList, helpmeList;
     ArrayAdapter<String> checkoffAdapter, helpmeAdapter;
 
@@ -51,6 +42,7 @@ public class SessionActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.session_detail_view);
 
+        //Grab id
         Intent in = getIntent();
         String assignment_id = in.getStringExtra("id");
 
