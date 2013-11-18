@@ -178,11 +178,12 @@ public class SessionDialog extends AlertDialog {
             }
         });
     }
+    //Pushes the session to Firebase
     public void addSessionToServer(Session session){
         Firebase sessionRef = new Firebase("https://olinja-base.firebaseio.com/sessions");
         Firebase pushRef = sessionRef.push();
 
         session.setId(pushRef.getName());
-        pushRef.setValue(session);
+        pushRef.setValue(session, session.priority);
     }
 }

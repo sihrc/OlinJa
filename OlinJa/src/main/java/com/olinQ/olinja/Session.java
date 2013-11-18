@@ -4,6 +4,9 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedHashSet;
 
 /**
@@ -11,6 +14,7 @@ import java.util.LinkedHashSet;
  */
 public class Session {
     String assignment,ninja,place,time,duration, date, check, help, checked, id;
+    long priority;
 
     public Session(){}
     public Session(String assignment, String ninja, String place, String time, String duration, String date, String check, String help, String checked){
@@ -23,6 +27,18 @@ public class Session {
         this.check = check;
         this.help = help;
         this.checked = checked;
+        getPriority();
+    }
+    //Gets priority for firebase.
+    public void getPriority(){
+        String[] date = this.date.split("/");
+        String[] splitTime = this.time.split(":");
+        Calendar start = new GregorianCalendar(Integer.parseInt(2000 + date[2]),
+                                               Integer.parseInt(date[0]),
+                                               Integer.parseInt(date[1]));
+        start.add(Calendar.HOUR_OF_DAY, Integer.valueOf(splitTime[0]));
+        start.add(Calendar.MINUTE, Integer.valueOf(splitTime[1].substring(0, 2)));
+        this.priority = start.getTimeInMillis();
     }
 
     public LinkedHashSet<String> getArrayList(String value){
@@ -65,6 +81,7 @@ public class Session {
     public String getId(){
         return this.id;
     }
+
     //Public Set Methods as required by Firebase
     public void setAssignment(String value){
         this.assignment = value;
