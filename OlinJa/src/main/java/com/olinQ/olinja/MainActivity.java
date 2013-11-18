@@ -87,6 +87,7 @@ public class MainActivity extends Activity {
     @Override
     public void onStop(){
         super.onStop();
+        //Application is closing - close the event listener - cleanup the adapter
         sessionRef.getRoot().child(".info/connected").removeEventListener(connected);
         sessionAdapter.cleanup();
     }
