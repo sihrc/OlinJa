@@ -107,7 +107,8 @@ public class SessionDialog extends AlertDialog {
                         myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
-        });
+        });it add .
+        git commit -am ''
     }
     //Set the onClickListener for time EditText
     public void setTimePicker(){
@@ -124,11 +125,12 @@ public class SessionDialog extends AlertDialog {
                 }
                 else
                 {
-                    hour = Integer.valueOf(curTime.substring(0,2));
-                    if (curTime.substring(5,7).equals("PM")){
+                    String[] splitTime = curTime.split(":");
+                    hour = Integer.valueOf(splitTime[0]);
+                    if (splitTime[1].substring(2,4).equals("PM")){
                         hour += 12;
                     }
-                    minute = Integer.valueOf(curTime.substring(3, 5));
+                    minute = Integer.valueOf(splitTime[1].substring(0, 2));
                 }
 
                 TimePickerDialog timePicker = new TimePickerDialog(getContext(),new TimePickerDialog.OnTimeSetListener(){
