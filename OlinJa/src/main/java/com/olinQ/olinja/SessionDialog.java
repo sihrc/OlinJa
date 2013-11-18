@@ -44,7 +44,7 @@ public class SessionDialog extends AlertDialog {
         date = (TextView) findViewById(R.id.dialog_input_date);
         time = (TextView) findViewById(R.id.dialog_input_time);
         duration = (TextView) findViewById(R.id.dialog_input_duration);
-
+        populateFakeData();
         Button cancel = (Button) findViewById(R.id.dialog_cancel);
         Button create = (Button) findViewById(R.id.dialog_create);
 
@@ -69,9 +69,17 @@ public class SessionDialog extends AlertDialog {
                     "",
                     ""
                 );
-                addSessionToServer(newSession);
-                Toast.makeText(getContext(), "Session created! You're such a nice person!", Toast.LENGTH_SHORT).show();
-                dismiss();
+                if (newSession.date.equals("")){
+                    Toast.makeText(getContext(), "Choose a date!", Toast.LENGTH_LONG).show();
+                } else if (newSession.time.equals("")){
+                    Toast.makeText(getContext(), "Choose a time!", Toast.LENGTH_LONG).show();
+                } else if (newSession.duration.equals("")){
+                    Toast.makeText(getContext(), "Choose a duration!", Toast.LENGTH_LONG).show();
+                } else {
+                    addSessionToServer(newSession);
+                    Toast.makeText(getContext(), "Session created! You're such a nice person!", Toast.LENGTH_SHORT).show();
+                    dismiss();
+                }
             }
         });
     }
@@ -184,6 +192,15 @@ public class SessionDialog extends AlertDialog {
         Firebase pushRef = sessionRef.push();
 
         session.setId(pushRef.getName());
-        pushRef.setValue(session, session.priority);
+        pushRef.setValue(session, session.getPriority());
+    }
+
+    //Fake Data
+    public void populateFakeData(){
+        assignment.setText("Diagnostic 1");
+        place.setText("WH2AL");
+        date.setText("11/20/13");
+        time.setText("9:00PM");
+        duration.setText("2 hr 30 min");
     }
 }

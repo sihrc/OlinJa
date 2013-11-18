@@ -27,10 +27,10 @@ public class Session {
         this.check = check;
         this.help = help;
         this.checked = checked;
-        getPriority();
+        this.priority = getPriority();
     }
     //Gets priority for firebase.
-    public void getPriority(){
+    public long getPriority(){
         String[] date = this.date.split("/");
         String[] splitTime = this.time.split(":");
         Calendar start = new GregorianCalendar(Integer.parseInt(2000 + date[2]),
@@ -38,7 +38,7 @@ public class Session {
                                                Integer.parseInt(date[1]));
         start.add(Calendar.HOUR_OF_DAY, Integer.valueOf(splitTime[0]));
         start.add(Calendar.MINUTE, Integer.valueOf(splitTime[1].substring(0, 2)));
-        this.priority = start.getTimeInMillis();
+        return start.getTimeInMillis();
     }
 
     public LinkedHashSet<String> getArrayList(String value){
