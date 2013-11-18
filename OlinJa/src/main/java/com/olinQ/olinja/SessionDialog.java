@@ -1,17 +1,24 @@
 package com.olinQ.olinja;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by chris on 11/13/13.
@@ -40,6 +47,7 @@ public class SessionDialog extends AlertDialog {
         Button cancel = (Button) findViewById(R.id.dialog_cancel);
         Button create = (Button) findViewById(R.id.dialog_create);
 
+        setupDateTimePickers();
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,8 +70,61 @@ public class SessionDialog extends AlertDialog {
                 );
                 addSessionToServer(newSession);
                 Toast.makeText(getContext(), "Session created! You're such a nice person!", Toast.LENGTH_SHORT).show();
+                dismiss();
             }
         });
+    }
+
+    public void setupDateTimePickers(){
+        //Date Picker for date
+        date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar myCalendar = Calendar.getInstance();
+                new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int i, int i2, int i3) {
+                                myCalendar.set(Calendar.YEAR, i);
+                                myCalendar.set(Calendar.MONTH, i2);
+                                myCalendar.set(Calendar.DAY_OF_MONTH, i3);
+                                String myFormat = "MM/dd/yy";
+                                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+                                date.setText(sdf.format(myCalendar.getTime()));
+                            }
+                        },
+                        myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+        //Time picker for time
+        time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar start = Calendar.getInstance();
+                int hour = start.get(Calendar.HOUR_OF_DAY);
+                int minute = start.get(Calendar.MINUTE);
+                TimePickerDialog timePicker = new TimePickerDialog(getContext(),new TimePickerDialog.OnTimeSetListener(){
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute){
+                        String inputTime, AMPM;
+                        if (selectedHour >= 12){
+                            if (selectedHour%12 == 0) inputTime = "12";
+                            else inputTime = String.valueOf(selectedHour%12);
+                            AMPM = "PM";}
+                        else{
+                            if (selectedHour%12 == 0) inputTime = "12";
+                            else inputTime = String.valueOf(selectedHour%12);
+                            AMPM = "AM";}
+                        inputTime = inputTime + ":" + String.valueOf(selectedMinute) + AMPM;
+                        time.setText(inputTime);
+                    }},hour,minute,false);
+                timePicker.setTitle("Select Start Time");
+                timePicker.show();
+            }
+        });
+
     }
 
     public void addSessionToServer(Session session){

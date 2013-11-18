@@ -63,9 +63,9 @@ public class MainActivity extends Activity {
         sessionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent in = new Intent (MainActivity.this, SessionActivity.class);
+                /*Intent in = new Intent (MainActivity.this, SessionActivity.class);
                 in.putExtra("Id", ((Session)sessionAdapter.getItem(position)).id);
-                startActivity(in);
+                startActivity(in);*/
             }
         });
 

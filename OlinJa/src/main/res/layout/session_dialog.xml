@@ -93,7 +93,6 @@
 
     <EditText
         android:id = "@+id/dialog_input_date"
-        android:inputType="date"
         android:layout_alignBottom="@id/dialog_date"
         android:layout_height = "@dimen/dialog_row_height"
         android:layout_width="fill_parent"
