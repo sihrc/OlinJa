@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -28,8 +29,8 @@ public class SessionDialog extends AlertDialog {
     String user;
     Context context;
 
-    EditText assignment, place, date, time, duration;
-
+    EditText assignment, place;
+    TextView date,time,duration;
     public SessionDialog(Context context, String user){
         super(context);
         setContentView(R.layout.session_dialog);
@@ -40,9 +41,9 @@ public class SessionDialog extends AlertDialog {
     public void onCreate(Bundle savedInstanceState){
         assignment = (EditText) findViewById(R.id.dialog_input_assignment);
         place = (EditText) findViewById(R.id.dialog_input_place);
-        date = (EditText) findViewById(R.id.dialog_input_date);
-        time = (EditText) findViewById(R.id.dialog_input_time);
-        duration = (EditText) findViewById(R.id.dialog_input_duration);
+        date = (TextView) findViewById(R.id.dialog_input_date);
+        time = (TextView) findViewById(R.id.dialog_input_time);
+        duration = (TextView) findViewById(R.id.dialog_input_duration);
 
         Button cancel = (Button) findViewById(R.id.dialog_cancel);
         Button create = (Button) findViewById(R.id.dialog_create);
@@ -76,7 +77,16 @@ public class SessionDialog extends AlertDialog {
     }
 
     public void setupDateTimePickers(){
+        //Making the EditText essentially a button...
+        date.setFocusable(false);   time.setFocusable(false);  duration.setFocusable(false);
+        date.setClickable(true);    time.setClickable(true);   duration.setClickable(true);
         //Date Picker for date
+        setDatePicker();
+        setTimePicker();
+        setDurationPicker();
+    }
+    //Set the onClickListener for date EditText
+    public void setDatePicker(){
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,13 +108,29 @@ public class SessionDialog extends AlertDialog {
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+    }
+    //Set the onClickListener for time EditText
+    public void setTimePicker(){
         //Time picker for time
         time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Calendar start = Calendar.getInstance();
-                int hour = start.get(Calendar.HOUR_OF_DAY);
-                int minute = start.get(Calendar.MINUTE);
+                int hour, minute;
+                String curTime = time.getText().toString();
+                if (curTime.equals("")){
+                    final Calendar setTime = Calendar.getInstance();
+                    hour = setTime.get(Calendar.HOUR_OF_DAY);
+                    minute = setTime.get(Calendar.MINUTE);
+                }
+                else
+                {
+                    hour = Integer.valueOf(curTime.substring(0,2));
+                    if (curTime.substring(5,7).equals("PM")){
+                        hour += 12;
+                    }
+                    minute = Integer.valueOf(curTime.substring(3, 5));
+                }
+
                 TimePickerDialog timePicker = new TimePickerDialog(getContext(),new TimePickerDialog.OnTimeSetListener(){
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute){
@@ -117,16 +143,37 @@ public class SessionDialog extends AlertDialog {
                             if (selectedHour%12 == 0) inputTime = "12";
                             else inputTime = String.valueOf(selectedHour%12);
                             AMPM = "AM";}
-                        inputTime = inputTime + ":" + String.valueOf(selectedMinute) + AMPM;
+                        String minute = String.valueOf(selectedMinute);
+                        if (minute.length() < 2){
+                            minute = "0" + minute;
+                        }
+                        inputTime = inputTime + ":" + minute + AMPM;
                         time.setText(inputTime);
                     }},hour,minute,false);
                 timePicker.setTitle("Select Start Time");
                 timePicker.show();
             }
         });
-
     }
+    //Set the onClickListener for duration EditText
+    public void setDurationPicker(){
+        duration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int hour = 0;
+                int minute = 0;
+                DurationPickerDialog durationPicker = new DurationPickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        duration.setText(String.valueOf(hourOfDay) + " hr " + String.valueOf(minute) + " min");
+                    }
+                },hour,minute,true,15);
 
+                durationPicker.setTitle("How Long?");
+                durationPicker.show();
+            }
+        });
+    }
     public void addSessionToServer(Session session){
         Firebase sessionRef = new Firebase("https://olinja-base.firebaseio.com/sessions");
         Firebase pushRef = sessionRef.push();
