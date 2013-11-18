@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -20,12 +17,9 @@ import com.firebase.client.ValueEventListener;
  */
 
 public class SessionActivity extends Activity {
+    //List Views and Adapters
     ListView checkoffList, helpmeList;
-    ArrayAdapter<String> checkoffAdapter, helpmeAdapter;
-
-    //For managing the list view of sessions
-    ListView sessionList;
-    SessionAdapter sessionAdapter;
+    QListAdapter checkoffAdapter, helpmeAdapter;
 
     //Username
     String username;
@@ -35,7 +29,7 @@ public class SessionActivity extends Activity {
 
     //Firebase URL Location
     String FIREBASE_URL = "https://olinja-base.firebaseio.com/sessions";
-    Firebase sessionRef;
+    Firebase checkRef, helpRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +41,8 @@ public class SessionActivity extends Activity {
         String assignment_id = in.getStringExtra("id");
 
         //Setup Firebase Reference
-        sessionRef = new Firebase(FIREBASE_URL).child(assignment_id);
+        checkRef = new Firebase(FIREBASE_URL).child(assignment_id).child("check");
+        helpRef = new Firebase(FIREBASE_URL).child(assignment_id).child("help");
     }
 
     @Override
@@ -55,26 +50,16 @@ public class SessionActivity extends Activity {
         super.onStart();
 
         //Setup ListView
-        sessionList = (ListView) findViewById(R.id.session_list);
+        checkoffList = (ListView) findViewById(R.id.session_list_checkoff);
+        helpmeList = (ListView) findViewById(R.id.session_list_helpMe);
 
         //Setup list adapter
-        sessionAdapter = new SessionAdapter(sessionRef,this, R.layout.session_list_item);
+        checkoffAdapter = new QListAdapter(checkRef,this, R.layout.queue_list_item);
+        helpmeAdapter = new QListAdapter(helpRef, this, R.layout.queue_list_item);
 
-        //Set the adapter
-        sessionList.setAdapter(sessionAdapter);
-
-        //Set OnItemClick
-        sessionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                /*Intent in = new Intent (MainActivity.this, SessionActivity.class);
-                in.putExtra("Id", ((Session)sessionAdapter.getItem(position)).id);
-                startActivity(in);*/
-            }
-        });
 
         //Connectivity Check
-        connected = sessionRef.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
+        connected = checkRef.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean connected = (Boolean)dataSnapshot.getValue();
@@ -92,8 +77,9 @@ public class SessionActivity extends Activity {
     public void onStop(){
         super.onStop();
         //Application is closing - close the event listener - cleanup the adapter
-        sessionRef.getRoot().child(".info/connected").removeEventListener(connected);
-        sessionAdapter.cleanup();
+        checkRef.getRoot().child(".info/connected").removeEventListener(connected);
+        checkoffAdapter.cleanup();
+        helpmeAdapter.cleanup();
     }
 
     @Override
@@ -103,54 +89,5 @@ public class SessionActivity extends Activity {
         return true;
     }
 
-    /*public void populateListViews(){
-        checkoffList = (ListView) findViewById(R.id.session_list_checkoff);
-        helpmeList = (ListView) findViewById(R.id.session_list_helpMe);
-
-        checkoffAdapter = new QListAdapter(SessionActivity.this, R.layout.q_list_item);
-        helpmeAdapter = new QListAdapter(SessionActivity.this, R.layout.q_list_item);
-        checkoffList.setAdapter(checkoffAdapter);
-        helpmeList.setAdapter(helpmeAdapter);
-    }*/
-
-    /*
-    public void onCreate(Bundle savedInstanceState){
-
-
-        populateListViews();
-        Firebase sessionRef = new Firebase("https://olinja-base.firebaseio.com/sessions/"+id);
-        sessionRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                SessionActivity.this.curSession = dataSnapshot.getValue(Session.class).toSession();
-                populateListViews();
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-
-    }
-
-
-    //Generate Notifications
-    public void notification() {
-        //Sight small icon
-        Notification.Builder mBuilder = new Notification.Builder(this)
-                .setContentTitle("OlinJa Session")
-                .setContentText("It's almost your turn!")
-                .setAutoCancel(true);
-        // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, MainActivity.class);
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, 0);
-
-
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        mNotificationManager.notify(0, mBuilder.build());
-    }*/
 }
 
