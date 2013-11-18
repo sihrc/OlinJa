@@ -76,8 +76,8 @@ public class DurationPickerDialog extends TimePickerDialog
 
             //Creating a new number spinner for hours
             NumberPicker mHourSpinner = (NumberPicker)mTimePicker.findViewById(h.getInt(null));
-            mMinuteSpinner.setMinValue(0); //Min Value
-            mMinuteSpinner.setMaxValue(5); //Max Value
+            mHourSpinner.setMinValue(0); //Min Value
+            mHourSpinner.setMaxValue(4); //Max Value
             List<String> hourValues = new ArrayList<String>();
             //Add values to minutes
             for (int i = 0; i < 5; i++) //Iterate through values wanted
