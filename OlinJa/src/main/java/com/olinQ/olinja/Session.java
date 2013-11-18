@@ -3,6 +3,7 @@ package com.olinQ.olinja;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 
 /**
  * Created by chris on 11/13/13.
@@ -98,7 +99,7 @@ public class Session {
         removeFromHelp(value);
     }
     public void helpToChecked(String value){
-        addToCheckec(value);
+        addToChecked(value);
         removeFromHelp(value);
     }
 

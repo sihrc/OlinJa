@@ -1,7 +1,10 @@
 package com.olinQ.olinja;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 
 /**
  * Created by chris on 11/17/13.
@@ -32,12 +35,13 @@ public class FirebaseSession {
         return newSession;
     }
 
-    public ArrayList<String> getArrayList(String value){
+    public LinkedHashSet<String> getArrayList(String value){
         if (value.length() > 2){
-            return new ArrayList<String> (Arrays.asList(this.check.substring(1,-1).split(",")));
+            Log.i("FireBaseSession", "String " + value);
+            return new LinkedHashSet<String>(Arrays.asList(value.substring(1, -1).split(",")));
         }
         else {
-            return new ArrayList<String>();
+            return new LinkedHashSet<String>();
         }
     }
     //Public Get Methods as required by Firebase

@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import com.firebase.client.*;
 
@@ -42,7 +44,6 @@ public class MainActivity extends Activity {
         user = "Chris"; //Hard Coded username //Needs implementation
         populateListView();
         grabAllSessions();
-
     }
 
     //Initially Populates the session list view
@@ -51,6 +52,14 @@ public class MainActivity extends Activity {
         sessionAdapter = new SessionAdapter(this,sessionHolder);
         sessionList = (ListView) findViewById(R.id.session_list);
         sessionList.setAdapter(sessionAdapter);
+
+        sessionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent in = new Intent (MainActivity.this, SessionActivity.class);
+                in.putExtra("Id", MainActivity.this.sessionHolder.get(position).id);
+            }
+        });
     }
 
     //Grab a list of sessions from the database
@@ -59,22 +68,25 @@ public class MainActivity extends Activity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 FirebaseSession newSession = dataSnapshot.getValue(FirebaseSession.class);
+                newSession.setId(dataSnapshot.getName());
+                Log.i("Firebase Pull", "ChildAdded is running");
                 MainActivity.this.sessions.put(newSession.id, newSession.toSession());
-                refreshListView();
+                MainActivity.this.sessionAdapter.add(newSession.toSession());
+                MainActivity.this.sessionAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 FirebaseSession newSession = dataSnapshot.getValue(FirebaseSession.class);
                 MainActivity.this.sessions.put(newSession.id, newSession.toSession());
-                refreshListView();
+                //refreshListView();
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 FirebaseSession newSession = dataSnapshot.getValue(FirebaseSession.class);
                 MainActivity.this.sessions.remove(newSession.id);
-                refreshListView();
+                //refreshListView();
             }
 
             @Override
@@ -92,10 +104,9 @@ public class MainActivity extends Activity {
     public void refreshListView(){
         //Log.i("Refreshing Sessions", sessions.toString());
         //Log.i("Refreshing Sessions", "Size: " + MainActivity.this.sessions.size());
-        sessionHolder.clear();
-        sessionHolder.addAll(sessions.values());
+        sessionAdapter.clear();
+        sessionAdapter.addAll(sessions.values());
         sessionAdapter.notifyDataSetChanged();
-        sessionList.invalidate();
     }
 
     //Dialog for adding a session
@@ -119,8 +130,6 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
         if (id == R.id.action_addSession) {
             showAddSessionDialog();
-            grabAllSessions();
-            refreshListView();
             return true;
         }
         return super.onOptionsItemSelected(item);
