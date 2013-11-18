@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -19,99 +20,60 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class MainActivity extends Activity {
     //For managing the list view of sessions
     ListView sessionList;
     SessionAdapter sessionAdapter;
 
-    //Holding the sessions by Id and session
-    LinkedHashMap<String,Session> sessions = new LinkedHashMap<String, Session>();
+    //Username
+    String username;
 
-    //Holding the arraylist of sessions for session adapter
-    ArrayList<Session> sessionHolder = new ArrayList<Session>();
-    String user;
-
-    // Create a reference to a Firebase location, returned as array
-    Firebase sessionRef = new Firebase("https://olinja-base.firebaseio.com/sessions");
+    //Firebase URL Location
+    String FIREBASE_URL = "https://olinja-base.firebaseio.com";
+    Firebase sessionRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Set User Name
-        user = "Chris"; //Hard Coded username //Needs implementation
-        populateListView();
-        grabAllSessions();
+        //Get Username
+        setupUsername();
+
+        //Setup Firebase Reference
+        sessionRef = new Firebase(FIREBASE_URL).child("sessions");
     }
 
-    //Initially Populates the session list view
-    private void populateListView(){
-        sessionHolder.addAll(MainActivity.this.sessions.values());
-        sessionAdapter = new SessionAdapter(this,sessionHolder);
+    @Override
+    public void onStart(){
+        super.onStart();
+
+        //Setup ListView
         sessionList = (ListView) findViewById(R.id.session_list);
+
+        //Setup list adapter
+        sessionAdapter = new SessionAdapter(sessionRef,this, R.layout.session_list_item);
+
+        //Set the adapter
         sessionList.setAdapter(sessionAdapter);
 
+        //Set OnItemClick
         sessionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent in = new Intent (MainActivity.this, SessionActivity.class);
-                in.putExtra("Id", MainActivity.this.sessionHolder.get(position).id);
+                in.putExtra("Id", ((FirebaseSession)sessionAdapter.getItem(position)).id);
+                startActivity(in);
             }
         });
-    }
 
-    //Grab a list of sessions from the database
-    public void grabAllSessions(){
-        sessionRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                FirebaseSession newSession = dataSnapshot.getValue(FirebaseSession.class);
-                newSession.setId(dataSnapshot.getName());
-                Log.i("Firebase Pull", "ChildAdded is running");
-                MainActivity.this.sessions.put(newSession.id, newSession.toSession());
-                MainActivity.this.sessionAdapter.add(newSession.toSession());
-                MainActivity.this.sessionAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                FirebaseSession newSession = dataSnapshot.getValue(FirebaseSession.class);
-                MainActivity.this.sessions.put(newSession.id, newSession.toSession());
-                //refreshListView();
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                FirebaseSession newSession = dataSnapshot.getValue(FirebaseSession.class);
-                MainActivity.this.sessions.remove(newSession.id);
-                //refreshListView();
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-    }
-
-    //Repopulate and refresh the list view
-    public void refreshListView(){
-        //Log.i("Refreshing Sessions", sessions.toString());
-        //Log.i("Refreshing Sessions", "Size: " + MainActivity.this.sessions.size());
-        sessionAdapter.clear();
-        sessionAdapter.addAll(sessions.values());
-        sessionAdapter.notifyDataSetChanged();
     }
 
     //Dialog for adding a session
     public void showAddSessionDialog(){
-        SessionDialog showDialog = new SessionDialog(MainActivity.this, user);
+        SessionDialog showDialog = new SessionDialog(MainActivity.this, username);
         showDialog.show();
     }
 
@@ -151,5 +113,17 @@ public class MainActivity extends Activity {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         mNotificationManager.notify(0, mBuilder.build());
+    }
+
+    //Setup Username
+    private void setupUsername() {
+        SharedPreferences prefs = getApplication().getSharedPreferences("ChatPrefs", 0);
+        username = prefs.getString("username", null);
+        if (username == null) {
+            Random r = new Random();
+            // Assign a random user name if we don't have one saved.
+            username = "Oliner" + r.nextInt(100000);
+            prefs.edit().putString("username", username).commit();
+        }
     }
 }
