@@ -107,8 +107,7 @@ public class SessionDialog extends AlertDialog {
                         myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
-        });it add .
-        git commit -am ''
+        });
     }
     //Set the onClickListener for time EditText
     public void setTimePicker(){
@@ -167,7 +166,10 @@ public class SessionDialog extends AlertDialog {
                 DurationPickerDialog durationPicker = new DurationPickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        duration.setText(String.valueOf(hourOfDay) + " hr " + String.valueOf(minute) + " min");
+                        if (minute == 0)
+                            duration.setText(String.valueOf(hourOfDay) + " hr");
+                        else
+                            duration.setText(String.valueOf(hourOfDay) + " hr " + String.valueOf(minute) + " min");
                     }
                 },hour,minute,true,15);
 
