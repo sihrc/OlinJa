@@ -115,9 +115,9 @@ public class SessionDialog extends AlertDialog {
         time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Calendar start = Calendar.getInstance();
-                int hour = start.get(Calendar.HOUR_OF_DAY);
-                int minute = start.get(Calendar.MINUTE);
+                final Calendar setTime = Calendar.getInstance();
+                int hour = setTime.get(Calendar.HOUR_OF_DAY);
+                int minute = setTime.get(Calendar.MINUTE);
                 TimePickerDialog timePicker = new TimePickerDialog(getContext(),new TimePickerDialog.OnTimeSetListener(){
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute){
@@ -140,7 +140,22 @@ public class SessionDialog extends AlertDialog {
     }
     //Set the onClickListener for duration EditText
     public void setDurationPicker(){
-
+        duration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar setTime = Calendar.getInstance();
+                int hour = setTime.get(Calendar.HOUR_OF_DAY);
+                int minute = setTime.get(Calendar.MINUTE);
+                DurationPickerDialog durationPicker = new DurationPickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        duration.setText(String.valueOf(hourOfDay) + " hr " + String.valueOf(minute) + " min");
+                    }
+                },hour,minute,true);
+                durationPicker.setTitle("How Long?");
+                durationPicker.show();
+            }
+        });
     }
     public void addSessionToServer(Session session){
         Firebase sessionRef = new Firebase("https://olinja-base.firebaseio.com/sessions");
