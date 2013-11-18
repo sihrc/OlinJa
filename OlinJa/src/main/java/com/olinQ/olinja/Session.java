@@ -1,6 +1,8 @@
 package com.olinQ.olinja;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -69,4 +71,12 @@ public class Session {
 
     //Set the Id
     public void setId(String value) {this.id = value;}
+
+    public ArrayList<String> deSerialize(String value){
+        if (value.length() > 2)
+            return new ArrayList<String>(Arrays.asList(value.substring(1, -1).split(",")));
+        else
+            return new ArrayList<String> ();
+    }
+
 }

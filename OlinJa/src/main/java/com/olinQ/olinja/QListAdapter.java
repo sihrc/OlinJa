@@ -15,6 +15,7 @@ public class QListAdapter extends FireBaseAdapter<QueueItem> {
 
     @Override
     protected void populateView(View view, QueueItem queueItem){
-
+        TextView person = (TextView) view.findViewById(R.id.person_name);
+        person.setText(queueItem.user);
     }
 }

@@ -54,8 +54,8 @@ public class SessionActivity extends Activity {
         helpmeList = (ListView) findViewById(R.id.session_list_helpMe);
 
         //Setup list adapter
-        checkoffAdapter = new QListAdapter(checkRef,this, R.layout.queue_list_item);
-        helpmeAdapter = new QListAdapter(helpRef, this, R.layout.queue_list_item);
+        checkoffAdapter = new QListAdapter(checkRef,this, R.layout.q_list_item);
+        helpmeAdapter = new QListAdapter(helpRef, this, R.layout.q_list_item);
 
 
         //Connectivity Check
