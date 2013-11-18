@@ -128,7 +128,7 @@ public class SessionDialog extends AlertDialog {
                     if (curTime.substring(5,7).equals("PM")){
                         hour += 12;
                     }
-                    minute = Integer.valueOf(curTime.substring(3,5));
+                    minute = Integer.valueOf(curTime.substring(3, 5));
                 }
 
                 TimePickerDialog timePicker = new TimePickerDialog(getContext(),new TimePickerDialog.OnTimeSetListener(){
@@ -167,7 +167,8 @@ public class SessionDialog extends AlertDialog {
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         duration.setText(String.valueOf(hourOfDay) + " hr " + String.valueOf(minute) + " min");
                     }
-                },hour,minute,true);
+                },hour,minute,true,15);
+
                 durationPicker.setTitle("How Long?");
                 durationPicker.show();
             }

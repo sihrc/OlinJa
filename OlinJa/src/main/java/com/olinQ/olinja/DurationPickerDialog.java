@@ -67,5 +67,14 @@ public class DurationPickerDialog extends TimePickerDialog
         {
             e.printStackTrace();
         }
+
+       mTimePicker.setOnTimeChangedListener(
+               new TimePicker.OnTimeChangedListener() {
+                   @Override
+                   public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                       setTitle("How Long?");
+                   }
+               }
+       );
     }
 }
