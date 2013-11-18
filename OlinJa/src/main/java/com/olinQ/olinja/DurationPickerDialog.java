@@ -2,44 +2,70 @@ package com.olinQ.olinja;
 
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.widget.NumberPicker;
 import android.widget.TimePicker;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by chris on 11/18/13.
  */
-public class DurationPickerDialog extends TimePickerDialog {
+public class DurationPickerDialog extends TimePickerDialog
+{
+    final OnTimeSetListener mCallback;
+    TimePicker mTimePicker;
+    final int increment;
 
-    public static final int TIME_PICKER_INTERVAL=15;
-    private boolean mIgnoreEvent=false;
-
-    public DurationPickerDialog(Context context, OnTimeSetListener callBack, int hourOfDay, int minute,
-                                boolean is24HourView) {
-        super(context, callBack, hourOfDay, minute, true);
+    public DurationPickerDialog(Context context, OnTimeSetListener callBack, int hourOfDay, int minute, boolean is24HourView, int increment)
+    {
+        super(context, callBack, hourOfDay, minute/increment, true);
+        this.mCallback = callBack;
+        this.increment = increment;
     }
-    /*
-     * (non-Javadoc)
-     * @see android.app.TimePickerDialog#onTimeChanged(android.widget.TimePicker, int, int)
-     * Implements Time Change Interval
-     */
+
     @Override
-    public void onTimeChanged(TimePicker timePicker, int hourOfDay, int minute) {
-        super.onTimeChanged(timePicker, hourOfDay, minute);
-        this.setTitle("2. Select Time");
-        if (!mIgnoreEvent){
-            minute = getRoundedMinute(minute);
-            mIgnoreEvent=true;
-            timePicker.setCurrentMinute(minute);
-            mIgnoreEvent=false;
+    public void onClick(DialogInterface dialog, int which) {
+        if (mCallback != null && mTimePicker!=null) {
+            mTimePicker.clearFocus();
+            mCallback.onTimeSet(mTimePicker, mTimePicker.getCurrentHour(),
+                    mTimePicker.getCurrentMinute()*increment);
         }
     }
 
-    public static int getRoundedMinute(int minute){
-        if(minute % TIME_PICKER_INTERVAL != 0){
-            int minuteFloor = minute - (minute % TIME_PICKER_INTERVAL);
-            minute = minuteFloor + (minute == minuteFloor + 1 ? TIME_PICKER_INTERVAL : 0);
-            if (minute == 60)  minute=0;
-        }
+    @Override
+    protected void onStop()
+    {
+        // override and do nothing
+    }
 
-        return minute;
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        try
+        {
+            Class<?> rClass = Class.forName("com.android.internal.R$id");
+            Field timePicker = rClass.getField("timePicker");
+            this.mTimePicker = (TimePicker)findViewById(timePicker.getInt(null));
+            Field m = rClass.getField("minute");
+
+            NumberPicker mMinuteSpinner = (NumberPicker)mTimePicker.findViewById(m.getInt(null));
+            mMinuteSpinner.setMinValue(0);
+            mMinuteSpinner.setMaxValue((60/increment)-1);
+            List<String> displayedValues = new ArrayList<String>();
+            for(int i=0;i<60;i+=increment)
+            {
+                displayedValues.add(String.format("%02d", i));
+            }
+            mMinuteSpinner.setDisplayedValues(displayedValues.toArray(new String[0]));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }

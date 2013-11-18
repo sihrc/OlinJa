@@ -115,9 +115,22 @@ public class SessionDialog extends AlertDialog {
         time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Calendar setTime = Calendar.getInstance();
-                int hour = setTime.get(Calendar.HOUR_OF_DAY);
-                int minute = setTime.get(Calendar.MINUTE);
+                int hour, minute;
+                String curTime = time.getText().toString();
+                if (curTime.equals("")){
+                    final Calendar setTime = Calendar.getInstance();
+                    hour = setTime.get(Calendar.HOUR_OF_DAY);
+                    minute = setTime.get(Calendar.MINUTE);
+                }
+                else
+                {
+                    hour = Integer.valueOf(curTime.substring(0,2));
+                    if (curTime.substring(5,7).equals("PM")){
+                        hour += 12;
+                    }
+                    minute = Integer.valueOf(curTime.substring(3,5));
+                }
+
                 TimePickerDialog timePicker = new TimePickerDialog(getContext(),new TimePickerDialog.OnTimeSetListener(){
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute){
@@ -130,7 +143,11 @@ public class SessionDialog extends AlertDialog {
                             if (selectedHour%12 == 0) inputTime = "12";
                             else inputTime = String.valueOf(selectedHour%12);
                             AMPM = "AM";}
-                        inputTime = inputTime + ":" + String.valueOf(selectedMinute) + AMPM;
+                        String minute = String.valueOf(selectedMinute);
+                        if (minute.length() < 2){
+                            minute = "0" + minute;
+                        }
+                        inputTime = inputTime + ":" + minute + AMPM;
                         time.setText(inputTime);
                     }},hour,minute,false);
                 timePicker.setTitle("Select Start Time");
@@ -143,9 +160,8 @@ public class SessionDialog extends AlertDialog {
         duration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Calendar setTime = Calendar.getInstance();
-                int hour = setTime.get(Calendar.HOUR_OF_DAY);
-                int minute = setTime.get(Calendar.MINUTE);
+                int hour = 0;
+                int minute = 0;
                 DurationPickerDialog durationPicker = new DurationPickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
