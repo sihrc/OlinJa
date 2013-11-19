@@ -1,47 +1,99 @@
 package com.olinQ.olinja;
 
+import android.util.Log;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 
 /**
- * Created by chris on 11/13/13.
+ * Created by chris on 11/17/13.
  */
 public class Session {
-    final public int CHECKED_OFF = 0;
-    final public int NEEDS_CHECKOFF = 1;
-    final public int NEEDS_HELP = 2;
+    String assignment,ninja,place,time,duration, date, check, help, checked, id;
 
-    String assignment,ninja,place,time,duration;
-    HashMap<String, Integer> checkOffList;
-
-    //public constructor
-    public Session(String assignment, String ninja, String place, String time, String duration){
+    public Session(){}
+    public Session(String assignment, String ninja, String place, String time, String duration, String date, String check, String help, String checked){
         this.assignment = assignment;
         this.ninja = ninja;
         this.place = place;
         this.time = time;
         this.duration = duration;
-        this.checkOffList = new HashMap<String, Integer>();
+        this.date = date;
+        this.check = check;
+        this.help = help;
+        this.checked = checked;
     }
 
-    //Public Methods
-    //Import a HashMap
-    public void setCheckOffList(HashMap<String, Integer> checkOffList){
-        this.checkOffList = checkOffList;
+    public LinkedHashSet<String> getArrayList(String value){
+        if (value.length() > 2){
+            Log.i("FireBaseSession", "String " + value);
+            return new LinkedHashSet<String>(Arrays.asList(value.substring(1, -1).split(",")));
+        }
+        else {
+            return new LinkedHashSet<String>();
+        }
     }
-
-    //Check someone off
-    public void checkOff(String user){
-        this.checkOffList.put(user, this.CHECKED_OFF);
+    //Public Get Methods as required by Firebase
+    public String getAssignment(){
+        return this.assignment;
     }
-
-    //Add someone to the queue
-    public void addToQueue(String user){
-        this.checkOffList.put(user, this.NEEDS_CHECKOFF);
+    public String getNinja(){
+        return this.ninja;
     }
-
-    //Add someone to the need help queue
-    public void setNeedHelp(String user){
-        this.checkOffList.put(user, this.NEEDS_HELP);
+    public String getPlace(){
+        return this.place;
+    }
+    public String getTime(){
+        return this.time;
+    }
+    public String getDuration(){
+        return this.duration;
+    }
+    public String getDate(){
+        return this.date;
+    }
+    public String getCheck(){
+        return this.check;
+    }
+    public String getHelp(){
+        return this.help;
+    }
+    public String getChecked(){
+        return this.checked;
+    }
+    public String getId(){
+        return this.id;
+    }
+    //Public Set Methods as required by Firebase
+    public void setAssignment(String value){
+        this.assignment = value;
+    }
+    public void setNinja(String value){
+        this.ninja = value;
+    }
+    public void setPlace(String value){
+        this.place = value;
+    }
+    public void setTime(String value){
+        this.time = value;
+    }
+    public void setDuration(String value){
+        this.duration = value;
+    }
+    public void setDate(String value){
+        this.date = value;
+    }
+    public void setCheck(String value){
+        this.check = value;
+    }
+    public void setHelp(String value){
+        this.help = value;
+    }
+    public void setChecked(String value){
+        this.checked = value;
+    }
+    public void setId(String value){
+        this.id = value;
     }
 }

@@ -3,10 +3,9 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@android:color/white"
-    android:layout_marginLeft = "@dimen/dialog_marginLeft"
-    android:layout_marginRight = "@dimen/dialog_marginRight">
+    >
     <TextView
         android:id = "@+id/dialog_title"
         android:layout_height = "wrap_content"
@@ -21,6 +20,7 @@
 
     <TextView
         android:id = "@+id/dialog_assignment"
+        android:layout_marginLeft = "@dimen/dialog_marginLeft"
         android:layout_below = "@id/dialog_title"
         android:layout_width = "wrap_content"
         android:layout_height = "@dimen/dialog_row_height"
@@ -51,6 +51,7 @@
 
     <TextView
         android:id = "@+id/dialog_place"
+        android:layout_marginLeft = "@dimen/dialog_marginLeft"
         android:gravity = "center_vertical"
         android:layout_below = "@id/divider_assignment"
         android:layout_width = "wrap_content"
@@ -80,18 +81,18 @@
 
     <TextView
         android:id = "@+id/dialog_date"
+        android:layout_marginLeft = "@dimen/dialog_marginLeft"
         android:gravity = "center_vertical"
         android:layout_below = "@id/divider_place"
         android:layout_width = "wrap_content"
         android:layout_height = "@dimen/dialog_row_height"
         android:layout_alignParentLeft="true"
-        android:text = "@string/dialog_input_time"
+        android:text = "@string/dialog_input_date"
         android:textSize = "@dimen/session_sub_font"
         />
 
     <EditText
         android:id = "@+id/dialog_input_date"
-        android:inputType="date"
         android:layout_alignBottom="@id/dialog_date"
         android:layout_height = "@dimen/dialog_row_height"
         android:layout_width="fill_parent"
@@ -110,8 +111,8 @@
 
     <TextView
         android:id = "@+id/dialog_time"
+        android:layout_marginLeft = "@dimen/dialog_marginLeft"
         android:gravity = "center_vertical"
-        android:inputType="time"
         android:layout_below = "@id/divider_date"
         android:layout_width = "wrap_content"
         android:layout_height = "@dimen/dialog_row_height"
@@ -140,12 +141,13 @@
 
     <TextView
         android:id = "@+id/dialog_duration"
+        android:layout_marginLeft = "@dimen/dialog_marginLeft"
         android:gravity = "center_vertical"
         android:layout_below = "@id/divider_time"
         android:layout_width = "wrap_content"
         android:layout_height = "@dimen/dialog_row_height"
         android:layout_alignParentLeft="true"
-        android:text = "@string/dialog_input_time"
+        android:text = "@string/dialog_input_duration"
         android:textSize = "@dimen/session_sub_font"
         />
 
@@ -155,7 +157,7 @@
         android:layout_height = "@dimen/dialog_row_height"
         android:layout_width="fill_parent"
         android:layout_alignLeft="@id/dialog_input_assignment"
-        android:hint="@string/dialog_hint_time"
+        android:hint="@string/dialog_hint_duration"
         android:textSize = "@dimen/session_sub_font"/>
 
     <View
@@ -179,7 +181,7 @@
 
     <View
         android:id = "@+id/button_divider"
-        android:layout_alignParentBottom="true"
+        android:layout_below = "@id/divider_duration"
         android:layout_marginTop = "@dimen/divider_top"
         android:layout_toRightOf = "@id/dialog_cancel"
         android:layout_width = "@dimen/divider_height"

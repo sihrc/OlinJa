@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">OlinQ</string>
+    <string name="app_name">OlinJa</string>
     <string name="action_settings">Settings</string>
 
     <string name="session_example_title">Diagnostic II</string>
@@ -23,4 +23,7 @@
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_create">Create</string>
     <string name="dialog_edit">Edit</string>
+
+    <string name="session_title_checkoff">CheckOff!</string>
+    <string name="session_title_helpMe">HelpMe!</string>
 </resources>
