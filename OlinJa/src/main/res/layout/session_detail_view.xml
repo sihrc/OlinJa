@@ -17,9 +17,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/session_font"
+        android:textSize="@dimen/session_title_font"
         android:text="@string/session_title_checkoff"
         />
+    <TextView
+        android:id = "@+id/checkoff_add_queue"
+        android:layout_toLeftOf="@id/center_on_me"
+        android:layout_width = "wrap_content"
+        android:padding = "@dimen/session_title_padding"
+        android:layout_height = "wrap_content"
+        android:textSize = "@dimen/session_title_font"
+        android:text = "@string/add_queue"/>
     <ListView
         android:id="@+id/session_list_checkoff"
         android:layout_below = "@id/session_title_checkoff"
@@ -38,9 +46,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/session_font"
+        android:textSize="@dimen/session_title_font"
         android:text="@string/session_title_helpMe"
         />
+
+    <TextView
+        android:id = "@+id/helpMe_add_queue"
+        android:layout_alignParentRight="true"
+        android:layout_width = "wrap_content"
+        android:padding = "@dimen/session_title_padding"
+        android:layout_height = "wrap_content"
+        android:textSize = "@dimen/session_title_font"
+        android:text = "@string/add_queue"/>
     <ListView
         android:id="@+id/session_list_helpMe"
         android:layout_below = "@id/session_title_helpMe"

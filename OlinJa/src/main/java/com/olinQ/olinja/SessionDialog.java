@@ -64,10 +64,7 @@ public class SessionDialog extends AlertDialog {
                     place.getText().toString(),
                     time.getText().toString(),
                     duration.getText().toString(),
-                    date.getText().toString(),
-                    "[]",
-                    "[]",
-                    "[]"
+                    date.getText().toString()
                 );
                 if (newSession.date.equals("")){
                     Toast.makeText(getContext(), "Choose a date!", Toast.LENGTH_LONG).show();

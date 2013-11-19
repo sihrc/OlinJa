@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,7 +65,7 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent in = new Intent (MainActivity.this, SessionActivity.class);
-                in.putExtra("Id", ((Session)sessionAdapter.getItem(position)).id);
+                in.putExtra("id", ((Session)sessionAdapter.getItem(position)).id);
                 startActivity(in);
             }
         });
@@ -120,12 +121,12 @@ public class MainActivity extends Activity {
 
     //Setup Username
     private void setupUsername() {
-        SharedPreferences prefs = getApplication().getSharedPreferences("ChatPrefs", 0);
+        SharedPreferences prefs = getApplication().getSharedPreferences("OlinJa", 0);
         username = prefs.getString("username", null);
         if (username == null) {
             Random r = new Random();
             // Assign a random user name if we don't have one saved.
-            username = "Oliner" + r.nextInt(100000);
+            username = "Oliner" + r.nextInt(10);
             prefs.edit().putString("username", username).commit();
         }
     }

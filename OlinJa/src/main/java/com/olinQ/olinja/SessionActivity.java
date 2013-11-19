@@ -2,15 +2,21 @@ package com.olinQ.olinja;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+
+import java.util.Random;
 
 /**
  * Created by chris on 11/17/13.
@@ -21,6 +27,8 @@ public class SessionActivity extends Activity {
     ListView checkoffList, helpmeList;
     QListAdapter checkoffAdapter, helpmeAdapter;
 
+    //Add to queue Buttons
+    TextView checkAdd, helpAdd;
     //Username
     String username;
 
@@ -28,21 +36,24 @@ public class SessionActivity extends Activity {
     ValueEventListener connected;
 
     //Firebase URL Location
-    String FIREBASE_URL = "https://olinja-base.firebaseio.com/sessions";
+    String CHECKED_URL = "https://olinja-base.firebaseio.com/checked/";
+    String HELP_URL = "https://olinja-base.firebaseio.com/help/";
+
     Firebase checkRef, helpRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.session_detail_view);
-
+        //Grab username
+        setupUsername();
         //Grab id
         Intent in = getIntent();
-        String assignment_id = in.getStringExtra("id");
+        String id = in.getStringExtra("id");
 
         //Setup Firebase Reference
-        checkRef = new Firebase(FIREBASE_URL).child(assignment_id).child("check");
-        helpRef = new Firebase(FIREBASE_URL).child(assignment_id).child("help");
+        checkRef = new Firebase(CHECKED_URL + "/" + id);
+        helpRef = new Firebase(HELP_URL + "/" + id);
     }
 
     @Override
@@ -56,6 +67,10 @@ public class SessionActivity extends Activity {
         //Setup list adapter
         checkoffAdapter = new QListAdapter(checkRef,this, R.layout.q_list_item);
         helpmeAdapter = new QListAdapter(helpRef, this, R.layout.q_list_item);
+
+        //Set List Adapter
+        checkoffList.setAdapter(checkoffAdapter);
+        helpmeList.setAdapter(helpmeAdapter);
 
 
         //Connectivity Check
@@ -72,6 +87,28 @@ public class SessionActivity extends Activity {
             @Override
             public void onCancelled(FirebaseError firebaseError) {}
         });
+
+        //AddToQueue Buttons
+        checkAdd = (TextView) findViewById(R.id.checkoff_add_queue);
+        helpAdd = (TextView) findViewById(R.id.helpMe_add_queue);
+
+        //Add click listeners
+        checkAdd.setOnClickListener(addToQueue("check"));
+        helpAdd.setOnClickListener(addToQueue("help"));
+    }
+
+    public View.OnClickListener addToQueue(final String mode){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Firebase pushref;
+                if (mode.equals("check"))
+                    pushref = checkRef.push();
+                else
+                    pushref = helpRef.push();
+                pushref.setValue(new QueueItem(username, pushref.getName()));
+            }
+        };
     }
     @Override
     public void onStop(){
@@ -87,6 +124,18 @@ public class SessionActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    //Setup Username
+    private void setupUsername() {
+        SharedPreferences prefs = getApplication().getSharedPreferences("OlinJa", 0);
+        username = prefs.getString("username", null);
+        if (username == null) {
+            Random r = new Random();
+            // Assign a random user name if we don't have one saved.
+            username = "Oliner" + r.nextInt(10);
+            prefs.edit().putString("username", username).commit();
+        }
     }
 
 }

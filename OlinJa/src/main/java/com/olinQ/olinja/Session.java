@@ -1,8 +1,6 @@
 package com.olinQ.olinja;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -10,20 +8,17 @@ import java.util.GregorianCalendar;
  * Created by chris on 11/17/13.
  */
 public class Session {
-    String assignment,ninja,place,time,duration, date, check, help, checked, id;
+    String assignment,ninja,place,time,duration, date, id;
     long priority;
     
     public Session(){} //Required by firebase
-    public Session(String assignment, String ninja, String place, String time, String duration, String date, String check, String help, String checked){
+    public Session(String assignment, String ninja, String place, String time, String duration, String date){
         this.assignment = assignment;
         this.ninja = ninja;
         this.place = place;
         this.time = time;
         this.duration = duration;
         this.date = date;
-        this.check = check;
-        this.help = help;
-        this.checked = checked;
         this.priority = getPriority();
     }
 
@@ -46,15 +41,6 @@ public class Session {
     public String getDate(){
         return this.date;
     }
-    public String getCheck(){
-        return this.check;
-    }
-    public String getHelp(){
-        return this.help;
-    }
-    public String getChecked(){
-        return this.checked;
-    }
     public String getId(){
         return this.id;
     }
@@ -72,11 +58,11 @@ public class Session {
     //Set the Id
     public void setId(String value) {this.id = value;}
 
-    public ArrayList<String> deSerialize(String value){
+/*    public ArrayList<String> deSerialize(String value){
         if (value.length() > 2)
             return new ArrayList<String>(Arrays.asList(value.substring(1, -1).split(",")));
         else
             return new ArrayList<String> ();
-    }
+    }*/
 
 }
