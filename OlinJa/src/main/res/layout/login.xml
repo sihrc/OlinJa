@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    >
+    <TextView
+        android:id = "@+id/login_title"
+        android:layout_height = "wrap_content"
+        android:layout_width = "match_parent"
+        android:layout_alignParentTop="true"
+        android:gravity = "center"
+        android:padding = "@dimen/login_title"
+        android:text = "@string/login_title"
+        android:textSize = "@dimen/session_font"
+        android:background = "@android:color/black"
+        android:textColor="@android:color/white"/>
+    <TextView
+        android:id = "@+id/login"
+        android:layout_marginLeft = "@dimen/dialog_marginLeft"
+        android:layout_below = "@id/login_title"
+        android:layout_width = "wrap_content"
+        android:layout_height = "@dimen/dialog_row_height"
+        android:layout_alignParentLeft="true"
+        android:text = "@string/login"
+        android:textSize = "@dimen/session_font"
+        android:padding="5dp"
+        android:gravity = "center_vertical"
+        />
+
+    <EditText
+        android:id = "@+id/dialog_input_assignment"
+        android:layout_alignBottom="@id/login"
+        android:layout_height = "@dimen/dialog_row_height"
+        android:layout_width="fill_parent"
+        android:layout_marginLeft = "@dimen/dialog_marginLeft"
+        android:layout_toRightOf="@id/login"
+        android:hint="@string/login_hint"
+        android:padding="5dp"
+        android:textSize = "@dimen/session_font"/>
+
+    <TextView
+        android:id = "@+id/button_text"
+        android:layout_below = "@id/login"
+        android:layout_width = "match_parent"
+        android:layout_height = "@dimen/dialog_row_height"
+        android:gravity = "center"
+        android:layout_alignParentLeft="true"
+        android:text = "@string/button_text"
+        android:textSize = "@dimen/session_font"
+        android:background = "#cccccc"
+        android:padding="10dp"
+        />
+
+    <View
+        android:paddingTop = "@dimen/divider_margin"
+        android:paddingBottom = "@dimen/divider_margin"
+        android:id = "@+id/divider_duration"
+        android:layout_below = "@id/button_text"
+        android:layout_width = "match_parent"
+        android:layout_height = "@dimen/divider_height"
+        android:background = "@android:color/black"/>
+    <Button
+        android:id = "@+id/login_student"
+        android:gravity = "center"
+        android:layout_height = "@dimen/button_height"
+        android:layout_width = "@dimen/button_width"
+        android:layout_below = "@id/divider_duration"
+        android:background = "@android:color/transparent"
+        android:text = "@string/student"
+        android:layout_alignParentLeft="true"/>
+
+    <View
+        android:id = "@+id/button_divider"
+        android:layout_below = "@id/divider_duration"
+        android:layout_marginTop = "@dimen/divider_top"
+        android:layout_toRightOf = "@id/login_student"
+        android:layout_width = "@dimen/divider_height"
+        android:layout_height = "@dimen/button_divider"
+        android:background = "@android:color/black"/>
+
+    <Button
+        android:id = "@+id/login_ninja"
+        android:gravity = "center"
+        android:layout_height = "@dimen/button_height"
+        android:layout_width = "@dimen/button_width"
+        android:layout_below = "@id/divider_duration"
+        android:background = "@android:color/transparent"
+        android:text = "@string/login_ninja"
+        android:layout_toRightOf = "@id/button_divider"/>
+
+</RelativeLayout>

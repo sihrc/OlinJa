@@ -27,4 +27,12 @@
     <string name="session_title_checkoff">CheckOff!</string>
     <string name="session_title_helpMe">HelpMe!</string>
     <string name="add_queue">+Q</string>
+
+    <string name="checked_off_people">People Who Have Been Checked Off:</string>
+    <string name="login_title">Login</string>
+    <string name="login">Name:</string>
+    <string name="login_hint">Type in Actual Name</string>
+    <string name="student">Student</string>
+    <string name="login_ninja">Ninja</string>
+    <string name="button_text">I am a:</string>
 </resources>

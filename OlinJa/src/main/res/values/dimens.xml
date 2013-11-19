@@ -18,12 +18,14 @@
     <dimen name="divider_top">5dp</dimen>
 
 
-    <dimen name="button_width">150dp</dimen>
+    <dimen name="button_width">200dp</dimen>
     <dimen name="button_height">60dp</dimen>
 
     <dimen name="session_panel_width">180dp</dimen>
     <dimen name="session_title_height">40dp</dimen>
     <dimen name="session_title_padding">5dp</dimen>
     <dimen name="session_title_font">26sp</dimen>
+
+    <dimen name="login_title">5dp</dimen>
     </resources>
 
