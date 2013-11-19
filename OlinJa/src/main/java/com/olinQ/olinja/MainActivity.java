@@ -2,15 +2,11 @@ package com.olinQ.olinja;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,16 +17,29 @@ import android.widget.Toast;
 
 import com.firebase.client.*;
 
-import java.util.Random;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class MainActivity extends Activity {
     //For managing the list view of sessions
     ListView sessionList;
     SessionAdapter sessionAdapter;
 
-    //Username
+    //User Information
     String username;
-    //If ninja
+    String password;
     Boolean ninja;
 
     //Connectivity
@@ -38,18 +47,22 @@ public class MainActivity extends Activity {
 
     //Firebase URL Location
     String FIREBASE_URL = "https://olinja-base.firebaseio.com";
+
     Firebase sessionRef;
+    Firebase userRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Get Username
-        setupUsername();
+        //Check for username
+        checkIfUser();
+
 
         //Setup Firebase Reference
         sessionRef = new Firebase(FIREBASE_URL).child("sessions");
+        userRef = new Firebase(FIREBASE_URL).child("users");
     }
 
     @Override
@@ -124,43 +137,106 @@ public class MainActivity extends Activity {
                     Toast.makeText(this, "You gots to be a ninja to make a session!", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_relog:
-                SharedPreferences prefs = getApplication().getSharedPreferences("OlinJa", 0);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        showLogin();
-                    }
+                        userLogin();                    }
                 });
-                username = prefs.getString("username", null);
-                if (prefs.getString("ninja","false").equals("false")){
-                    ninja = false;
-                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    //Setup Username
-    private void setupUsername() {
-        SharedPreferences prefs = getApplication().getSharedPreferences("OlinJa", 0);
-        username = prefs.getString("username", null);
-        if (username == null) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    showLogin();
-                }
-            });
-            username = prefs.getString("username", null);
-            if (prefs.getString("ninja","false").equals("false")){
-                ninja = false;
-            }
-
+    public void checkIfUser(){
+        if (getSharedPreferences("OlinJa", MODE_PRIVATE).getString("userId",null) == null){
+            userLogin();
+        } else {
+            getFirebaseUserInfo();
         }
     }
+    public void getFirebaseUserInfo(){
+        //userRef.child(username)
+    }
+    public void userLogin(){
+        //Inflate Dialog View
+        final View view = MainActivity.this.getLayoutInflater().inflate(R.layout.signin_main,null);
+        //Prompt for username and password
+        new AlertDialog.Builder(MainActivity.this)
+                .setView(view)
+                .setPositiveButton("Ninja", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        EditText userInput = (EditText) view.findViewById(R.id.username);
+                        EditText passInput = (EditText) view.findViewById(R.id.password);
+                        MainActivity.this.username = userInput.getText().toString();
+                        MainActivity.this.password = passInput.getText().toString();
+                        MainActivity.this.ninja = true;
+                        authenticate();
+                    }
+                }).setNegativeButton("Student", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                        EditText userInput = (EditText) view.findViewById(R.id.username);
+                        EditText passInput = (EditText) view.findViewById(R.id.password);
+                        MainActivity.this.username = userInput.getText().toString();
+                        MainActivity.this.password = passInput.getText().toString();
+                        MainActivity.this.ninja = false;
+                        authenticate();
+            }
+        }).show();
+    }
+    public void authenticate(){
+        new AsyncTask<Void, Void, String>() {
+            HttpResponse response;
+            InputStream inputStream = null;
+            String result = "";
+            HttpClient client = new DefaultHttpClient();
 
-    public void showLogin(){
-        LoginDialog dialog = new LoginDialog(this);
-        dialog.show();
+            @Override
+            protected void onPreExecute(){
+                HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000);
+            }
+            protected String doInBackground(Void... voids) {
+                //Website URL and header configuration
+                String website = "https://olinapps.herokuapp.com/api/exchangelogin";
+                HttpPost get_auth = new HttpPost(website);
+                get_auth.setHeader("Content-type","application/json");
+
+                //Create and execute POST with JSON Post Package
+                JSONObject auth = new JSONObject();
+                try{
+                    auth.put("username",MainActivity.this.username);
+                    auth.put("password",MainActivity.this.password);
+                    StringEntity se = new StringEntity(auth.toString());
+                    se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
+                    get_auth.setEntity(se);
+                }catch(Exception e){e.printStackTrace();}
+                try{response = client.execute(get_auth);}catch(Exception e){e.printStackTrace();}
+
+                //Read the response
+                HttpEntity entity = response.getEntity();
+
+                try{inputStream = entity.getContent();}catch(Exception e){e.printStackTrace();}
+                try{BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"),8);
+                    StringBuilder sb = new StringBuilder(); String line; String nl = System.getProperty("line.separator");
+
+                    while ((line = reader.readLine())!= null){
+                        sb.append(line);
+                        sb.append(nl);
+                    }
+                    result = sb.toString();}catch(Exception e){e.printStackTrace();}
+
+                //Convert Result to JSON
+                String username = "";
+                try{
+                    auth = new JSONObject(result);
+                    JSONObject userID = auth.getJSONObject("user");
+                    username = userID.getString("id");
+                }catch(Exception e){e.printStackTrace();}
+                return username;
+            }
+            protected void onPostExecute(String fullName){
+                userRef.child(username).setValue(new User(fullName,username,ninja));
+                getSharedPreferences("OlinJa",MODE_PRIVATE).edit().putString("userId", username);
+            }
+        }.execute();
     }
 }

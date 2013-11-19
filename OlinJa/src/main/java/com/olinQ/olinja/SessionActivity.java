@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,8 +16,6 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-
-import java.util.Random;
 
 /**
  * Created by chris on 11/17/13.
@@ -61,6 +58,7 @@ public class SessionActivity extends Activity {
         setContentView(R.layout.session_detail_view);
         //Grab username
         setupUsername();
+        updateUser();
         //Grab id
         Intent in = getIntent();
         sessionId = in.getStringExtra("id");
@@ -130,24 +128,26 @@ public class SessionActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Firebase pushref;
-                if (!inQueue){
+                updateUser();
+                if (!inQueue && !ninja){
                     if (mode.equals("check"))
                         pushref = checkRef.push();
                     else
                         pushref = helpRef.push();
                     String name = pushref.getName();
-                    pushref.setValue(new QueueItem(username,name));
+                    pushref.setValue(new User(username,name));
 
                     //Recording queue Id
                     getSharedPreferences("OlinJa", 0).edit().putString("queue", name).commit();
                     queueId = name;
                     inQueue = true;
 
-/*                    //Start Notification Service for when name in Queue is first.
+                    //Start Notification Service for when name in Queue is first.
                     Intent in = new Intent(SessionActivity.this, NotificationService.class);
                     in.putExtra("id",name);
                     in.putExtra("mode", mode);
-                    startService(in);*/
+                    in.putExtra("session", sessionId);
+                    startService(in);
                 }
             }
         };
@@ -176,7 +176,7 @@ public class SessionActivity extends Activity {
         switch (item.getItemId()){
             case R.id.action_checked:
                 Intent in = new Intent(this, CheckedOffActivity.class);
-                startActivity(in);
+                startActivityForResult(in, 0);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -194,20 +194,29 @@ public class SessionActivity extends Activity {
     //Check off Ninjee
     public void checkOffNinjee(int position, String mode){
         Firebase pushref;
-        QueueItem curItem;
+        User curItem;
         if (mode.equals("check")){ //Moves from the check off to checked off
-            curItem = ((QueueItem)checkoffAdapter.getItem(position));
+            curItem = ((User)checkoffAdapter.getItem(position));
             checkRef.child(sessionId).child(curItem.getId()).removeValue();
             pushref = checkedRef.push();
             pushref.setValue(curItem);
 
         } else { //Moves from helpme to checked off
-            curItem = ((QueueItem)helpmeAdapter.getItem(position));
+            curItem = ((User)helpmeAdapter.getItem(position));
             helpRef.child(sessionId).child(curItem.getId()).removeValue();
             pushref = checkedRef.push();
             pushref.setValue(curItem);
         }
     }
+    //Update user info
+    public void updateUser(){
+        SharedPreferences prefs = getApplication().getSharedPreferences("OlinJa",0);
+        username = prefs.getString("username", null);
+        if (prefs.getString("ninja","false").equals("false")){
+            ninja = false;
+        } else {ninja = true;}
+    }
 
+    //Check if in Queue
 }
 
