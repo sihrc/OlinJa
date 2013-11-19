@@ -38,8 +38,7 @@ public class MainActivity extends Activity {
     SessionAdapter sessionAdapter;
 
     //User Information
-    String username;
-    String password;
+    String username, fullName, password;
     Boolean ninja;
 
     //Connectivity
@@ -147,6 +146,7 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    //User Authentication Methods
     public void checkIfUser(){
         if (getSharedPreferences("OlinJa", MODE_PRIVATE).getString("userId",null) == null){
             userLogin();
@@ -155,7 +155,21 @@ public class MainActivity extends Activity {
         }
     }
     public void getFirebaseUserInfo(){
-        //userRef.child(username)
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User curUser = dataSnapshot.getValue(User.class);
+                if (username.equals(curUser.username)) {
+                    fullName = curUser.fullName;
+                    ninja = curUser.ninja;
+                    Toast.makeText(MainActivity.this, "You've been logged in as " + fullName, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
     }
     public void userLogin(){
         //Inflate Dialog View
@@ -225,17 +239,22 @@ public class MainActivity extends Activity {
                     result = sb.toString();}catch(Exception e){e.printStackTrace();}
 
                 //Convert Result to JSON
-                String username = "";
+                String username;
                 try{
                     auth = new JSONObject(result);
                     JSONObject userID = auth.getJSONObject("user");
                     username = userID.getString("id");
-                }catch(Exception e){e.printStackTrace();}
+                }catch(Exception e){e.printStackTrace(); username = "failed";}
                 return username;
             }
             protected void onPostExecute(String fullName){
+                if (username.equals("failed")){
+                    Toast.makeText(MainActivity.this, "Authentication failed :(", Toast.LENGTH_SHORT).show();
+                    userLogin();
+                } else {
                 userRef.child(username).setValue(new User(fullName,username,ninja));
                 getSharedPreferences("OlinJa",MODE_PRIVATE).edit().putString("userId", username);
+                }
             }
         }.execute();
     }
