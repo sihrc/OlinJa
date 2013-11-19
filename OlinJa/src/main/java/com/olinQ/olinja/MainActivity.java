@@ -63,9 +63,9 @@ public class MainActivity extends Activity {
         sessionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                /*Intent in = new Intent (MainActivity.this, SessionActivity.class);
+                Intent in = new Intent (MainActivity.this, SessionActivity.class);
                 in.putExtra("Id", ((Session)sessionAdapter.getItem(position)).id);
-                startActivity(in);*/
+                startActivity(in);
             }
         });
 
@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
                 if (connected)
                     Toast.makeText(MainActivity.this, "Connected to OlinJa!", Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(MainActivity.this, "Oh no! I'm Lost!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Oh no! I can't find the internet!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -87,6 +87,7 @@ public class MainActivity extends Activity {
     @Override
     public void onStop(){
         super.onStop();
+        //Application is closing - close the event listener - cleanup the adapter
         sessionRef.getRoot().child(".info/connected").removeEventListener(connected);
         sessionAdapter.cleanup();
     }

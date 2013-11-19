@@ -1,79 +1,93 @@
-/*
 package com.olinQ.olinja;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
+import android.view.Menu;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
-*/
 /**
  * Created by chris on 11/17/13.
- *//*
+ */
 
 public class SessionActivity extends Activity {
-    Session curSession;
+    //List Views and Adapters
     ListView checkoffList, helpmeList;
-    ArrayAdapter<String> checkoffAdapter, helpmeAdapter;
-    public void onCreate(Bundle savedInstanceState){
+    QListAdapter checkoffAdapter, helpmeAdapter;
+
+    //Username
+    String username;
+
+    //Connectivity
+    ValueEventListener connected;
+
+    //Firebase URL Location
+    String FIREBASE_URL = "https://olinja-base.firebaseio.com/sessions";
+    Firebase checkRef, helpRef;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.session_detail_view);
 
+        //Grab id
         Intent in = getIntent();
-        String id = in.getStringExtra("id");
+        String assignment_id = in.getStringExtra("id");
 
-        populateListViews();
-        Firebase sessionRef = new Firebase("https://olinja-base.firebaseio.com/sessions/"+id);
-        sessionRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                SessionActivity.this.curSession = dataSnapshot.getValue(Session.class).toSession();
-                populateListViews();
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-
+        //Setup Firebase Reference
+        checkRef = new Firebase(FIREBASE_URL).child(assignment_id).child("check");
+        helpRef = new Firebase(FIREBASE_URL).child(assignment_id).child("help");
     }
-    public void populateListViews(){
+
+    @Override
+    public void onStart(){
+        super.onStart();
+
+        //Setup ListView
         checkoffList = (ListView) findViewById(R.id.session_list_checkoff);
         helpmeList = (ListView) findViewById(R.id.session_list_helpMe);
 
-        checkoffAdapter = new ArrayAdapter<String>(SessionActivity.this, android.R.layout.simple_list_item_1, curSession.check.toArray(new String[curSession.check.size()]));
-        helpmeAdapter = new ArrayAdapter<String>(SessionActivity.this, android.R.layout.simple_list_item_1, curSession.help.toArray(new String[curSession.help.size()]));
-        checkoffList.setAdapter(checkoffAdapter);
-        helpmeList.setAdapter(helpmeAdapter);
+        //Setup list adapter
+        checkoffAdapter = new QListAdapter(checkRef,this, R.layout.q_list_item);
+        helpmeAdapter = new QListAdapter(helpRef, this, R.layout.q_list_item);
+
+
+        //Connectivity Check
+        connected = checkRef.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean connected = (Boolean)dataSnapshot.getValue();
+                if (connected)
+                    Toast.makeText(SessionActivity.this, "Connected to Assignment!", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(SessionActivity.this, "Oh no! I can't find the internet!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {}
+        });
+    }
+    @Override
+    public void onStop(){
+        super.onStop();
+        //Application is closing - close the event listener - cleanup the adapter
+        checkRef.getRoot().child(".info/connected").removeEventListener(connected);
+        checkoffAdapter.cleanup();
+        helpmeAdapter.cleanup();
     }
 
-    //Generate Notifications
-    public void notification() {
-        //Sight small icon
-        Notification.Builder mBuilder = new Notification.Builder(this)
-                .setContentTitle("OlinJa Session")
-                .setContentText("It's almost your turn!")
-                .setAutoCancel(true);
-        // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, MainActivity.class);
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, 0);
-
-
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        mNotificationManager.notify(0, mBuilder.build());
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
+
 }
-*/
+
