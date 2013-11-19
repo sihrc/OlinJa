@@ -2,9 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity" >
 
-    <item android:id="@+id/action_addSession"
+    <item android:id="@+id/action_checked"
         android:orderInCategory="100"
-        android:title="Leave"
-        android:text="Leave"
-        android:showAsAction="always" />
+        android:title="Checked"
+        android:text="Checked"
+        android:showAsAction="always"/>
 </menu>

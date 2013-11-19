@@ -116,14 +116,26 @@ public class MainActivity extends Activity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_addSession) {
-            if (ninja){
-                showAddSessionDialog();
-            } else {
-                Toast.makeText(this, "You gots to be a ninja to make a session!", Toast.LENGTH_SHORT).show();
-            }
-            return true;
+        switch (item.getItemId()){
+            case R.id.action_addSession:
+                if (ninja)
+                    showAddSessionDialog();
+                else
+                    Toast.makeText(this, "You gots to be a ninja to make a session!", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_relog:
+                SharedPreferences prefs = getApplication().getSharedPreferences("OlinJa", 0);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showLogin();
+                    }
+                });
+                username = prefs.getString("username", null);
+                if (prefs.getString("ninja","false").equals("false")){
+                    ninja = false;
+                }
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

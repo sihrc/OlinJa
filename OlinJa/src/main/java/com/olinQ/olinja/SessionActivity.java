@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -36,6 +37,10 @@ public class SessionActivity extends Activity {
 
     //Username
     String username;
+
+    //Queue Id
+    String queueId;
+    Boolean inQueue;
 
     //Session Id
     String sessionId;
@@ -125,11 +130,25 @@ public class SessionActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Firebase pushref;
-                if (mode.equals("check"))
-                    pushref = checkRef.push();
-                else
-                    pushref = helpRef.push();
-                pushref.setValue(new QueueItem(username, pushref.getName()));
+                if (!inQueue){
+                    if (mode.equals("check"))
+                        pushref = checkRef.push();
+                    else
+                        pushref = helpRef.push();
+                    String name = pushref.getName();
+                    pushref.setValue(new QueueItem(username,name));
+
+                    //Recording queue Id
+                    getSharedPreferences("OlinJa", 0).edit().putString("queue", name).commit();
+                    queueId = name;
+                    inQueue = true;
+
+/*                    //Start Notification Service for when name in Queue is first.
+                    Intent in = new Intent(SessionActivity.this, NotificationService.class);
+                    in.putExtra("id",name);
+                    in.putExtra("mode", mode);
+                    startService(in);*/
+                }
             }
         };
     }
@@ -149,11 +168,27 @@ public class SessionActivity extends Activity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        switch (item.getItemId()){
+            case R.id.action_checked:
+                Intent in = new Intent(this, CheckedOffActivity.class);
+                startActivity(in);
+        }
+        return super.onOptionsItemSelected(item);
+    }
     //Setup Username
     private void setupUsername() {
         SharedPreferences prefs = getApplication().getSharedPreferences("OlinJa", 0);
         username = prefs.getString("username", null);
         ninja = prefs.getString("ninja","false").equals("true");
+        queueId = prefs.getString("queue", null);
+        if (queueId == null){
+            inQueue = false;
+        }
     }
 
     //Check off Ninjee
