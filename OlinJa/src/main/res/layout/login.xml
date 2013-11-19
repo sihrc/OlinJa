@@ -31,7 +31,7 @@
         />
 
     <EditText
-        android:id = "@+id/dialog_input_assignment"
+        android:id = "@+id/dialog_input_name"
         android:layout_alignBottom="@id/login"
         android:layout_height = "@dimen/dialog_row_height"
         android:layout_width="fill_parent"
@@ -39,6 +39,7 @@
         android:layout_toRightOf="@id/login"
         android:hint="@string/login_hint"
         android:padding="5dp"
+        android:maxLength="14"
         android:textSize = "@dimen/session_font"/>
 
     <TextView

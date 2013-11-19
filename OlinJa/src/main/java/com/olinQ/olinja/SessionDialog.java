@@ -37,7 +37,7 @@ public class SessionDialog extends AlertDialog {
         this.context = context;
         this.user = user;
     }
-    /*assignment,ninja,place,time,duration, date, check, help, checked, id*/
+
     public void onCreate(Bundle savedInstanceState){
         assignment = (EditText) findViewById(R.id.dialog_input_assignment);
         place = (EditText) findViewById(R.id.dialog_input_place);

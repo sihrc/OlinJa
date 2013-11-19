@@ -1,10 +1,12 @@
 package com.olinQ.olinja;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -27,6 +30,8 @@ public class MainActivity extends Activity {
 
     //Username
     String username;
+    //If ninja
+    Boolean ninja;
 
     //Connectivity
     ValueEventListener connected;
@@ -113,7 +118,11 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_addSession) {
-            showAddSessionDialog();
+            if (ninja){
+                showAddSessionDialog();
+            } else {
+                Toast.makeText(this, "You gots to be a ninja to make a session!", Toast.LENGTH_SHORT).show();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -124,10 +133,22 @@ public class MainActivity extends Activity {
         SharedPreferences prefs = getApplication().getSharedPreferences("OlinJa", 0);
         username = prefs.getString("username", null);
         if (username == null) {
-            Random r = new Random();
-            // Assign a random user name if we don't have one saved.
-            username = "Oliner" + r.nextInt(10);
-            prefs.edit().putString("username", username).commit();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showLogin();
+                }
+            });
+            username = prefs.getString("username", null);
+            if (prefs.getString("ninja","false").equals("false")){
+                ninja = false;
+            }
+
         }
+    }
+
+    public void showLogin(){
+        LoginDialog dialog = new LoginDialog(this);
+        dialog.show();
     }
 }
