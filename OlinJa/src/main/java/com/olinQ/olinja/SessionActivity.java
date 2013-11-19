@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,17 +31,24 @@ public class SessionActivity extends Activity {
     //Add to queue Buttons
     TextView checkAdd, helpAdd;
 
+    //If Ninja
+    Boolean ninja;
+
     //Username
     String username;
 
+    //Session Id
+    String sessionId;
     //Connectivity
     ValueEventListener connected;
 
     //Firebase URL Location
-    String CHECKED_URL = "https://olinja-base.firebaseio.com/checked/";
+    String CHECK_URL = "https://olinja-base.firebaseio.com/check/";
     String HELP_URL = "https://olinja-base.firebaseio.com/help/";
+    String CHECKED_URL = "https://olinja-base.firebaseio.com/help/";
 
-    Firebase checkRef, helpRef;
+
+    Firebase checkRef, helpRef, checkedRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +58,12 @@ public class SessionActivity extends Activity {
         setupUsername();
         //Grab id
         Intent in = getIntent();
-        String id = in.getStringExtra("id");
+        sessionId = in.getStringExtra("id");
 
         //Setup Firebase Reference
-        checkRef = new Firebase(CHECKED_URL + "/" + id);
-        helpRef = new Firebase(HELP_URL + "/" + id);
+        checkedRef = new Firebase(CHECKED_URL + "/" + sessionId);
+        checkRef = new Firebase(CHECK_URL + "/" + sessionId);
+        helpRef = new Firebase(HELP_URL + "/" + sessionId);
     }
 
     @Override
@@ -73,6 +82,19 @@ public class SessionActivity extends Activity {
         checkoffList.setAdapter(checkoffAdapter);
         helpmeList.setAdapter(helpmeAdapter);
 
+        //Add list item onClick
+        checkoffList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                checkOffNinjee(position, "check");
+            }
+        });
+        helpmeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                checkOffNinjee(position, "help");
+            }
+        });
 
         //Connectivity Check
         connected = checkRef.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
@@ -131,11 +153,24 @@ public class SessionActivity extends Activity {
     private void setupUsername() {
         SharedPreferences prefs = getApplication().getSharedPreferences("OlinJa", 0);
         username = prefs.getString("username", null);
-        if (username == null) {
-            Random r = new Random();
-            // Assign a random user name if we don't have one saved.
-            username = "Oliner" + r.nextInt(10);
-            prefs.edit().putString("username", username).commit();
+        ninja = prefs.getString("ninja","false").equals("true");
+    }
+
+    //Check off Ninjee
+    public void checkOffNinjee(int position, String mode){
+        Firebase pushref;
+        QueueItem curItem;
+        if (mode.equals("check")){ //Moves from the check off to checked off
+            curItem = ((QueueItem)checkoffAdapter.getItem(position));
+            checkRef.child(sessionId).child(curItem.getId()).removeValue();
+            pushref = checkedRef.push();
+            pushref.setValue(curItem);
+
+        } else { //Moves from helpme to checked off
+            curItem = ((QueueItem)helpmeAdapter.getItem(position));
+            helpRef.child(sessionId).child(curItem.getId()).removeValue();
+            pushref = checkedRef.push();
+            pushref.setValue(curItem);
         }
     }
 
