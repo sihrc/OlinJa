@@ -7,4 +7,10 @@
         android:title="Add"
         android:text="Add"
         android:showAsAction="always" />
+
+    <item android:id="@+id/action_relog"
+        android:orderInCategory="100"
+        android:title="Relog"
+        android:text="Relog"
+        android:showAsAction="never|ifRoom" />
 </menu>
