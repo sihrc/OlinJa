@@ -102,6 +102,7 @@ public class MainActivity extends Activity {
             public void onCancelled(FirebaseError firebaseError) {}
         });
     }
+
     @Override
     public void onStop(){
         super.onStop();
@@ -151,6 +152,7 @@ public class MainActivity extends Activity {
         if (getSharedPreferences("OlinJa", MODE_PRIVATE).getString("userId",null) == null){
             userLogin();
         } else {
+            Toast.makeText(this,"Logging in... wait a sec!",Toast.LENGTH_SHORT).show();
             getFirebaseUserInfo();
         }
     }
