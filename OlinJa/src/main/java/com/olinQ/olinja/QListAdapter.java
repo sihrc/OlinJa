@@ -30,12 +30,13 @@ public class QListAdapter extends FireBaseAdapter<User> {
 
         //Set the name
         person.setText(queueItem.fullname);
-
+        profile.setImageResource(R.drawable.unknown);
         //Setting help and helpLight
         if (queueItem.needhelp.equals("false")){ //If person does not need help / is in check off queue
             helpLight.setVisibility(View.VISIBLE);
-            if (queueItem.canhelp.equals("false"))
+            if (queueItem.canhelp.equals("false")){
                 helpLight.setImageResource(R.drawable.yellow_help);
+                help.setText("Away");}
             else{
                 helpLight.setImageResource(R.drawable.green_help);
                 help.setText("Available to help!");
@@ -61,7 +62,7 @@ public class QListAdapter extends FireBaseAdapter<User> {
     //Grab profile picture
     public static Drawable LoadImageFromWebOperations(String url) {
         try {
-        return Drawable.createFromStream((InputStream) new URL("https://olinapps.herokuapp.com/" + url).getContent(), "src name");
+        return Drawable.createFromStream((InputStream) new URL("http://www.olinapps.com/" + url).getContent(), "src name");
         } catch (Exception e) {e.printStackTrace();return null;}
     }
 }

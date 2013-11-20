@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding = "10dp"
+        android:textSize = "@dimen/session_font"
+        android:scaleType="center"
+        android:gravity = "center"
+        android:textColor = "@color/olin_silver"
+        android:background="@color/olin_blue"
+        android:text = "Settings" />
+
+    <Button
+        android:id="@+id/get_checked_off_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background = "@android:color/transparent"
+        android:text="Checked Off List" />
+    <View
+        android:layout_width = "match_parent"
+        android:layout_height = "1dp"
+        android:background = "@color/olin_lightblue"/>
+</LinearLayout>

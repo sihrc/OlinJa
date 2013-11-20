@@ -1,0 +1,35 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding = "10dp"
+        android:textSize = "@dimen/session_font"
+        android:scaleType="center"
+        android:gravity = "center"
+        android:textColor = "@color/olin_silver"
+        android:background="@color/olin_blue"
+        android:text = "Settings" />
+    <Button
+        android:id="@+id/leave_queue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background = "@color/olin_white"
+        android:text="Leave the Queue" />
+    <View
+        android:layout_width = "match_parent"
+        android:layout_height = "2dp"
+        android:background = "@color/olin_lightblue"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin = "5dp"
+        android:textSize = "@dimen/session_sub_font"
+        android:text = "Are you available for help?"/>
+    <View
+        android:layout_width = "match_parent"
+        android:layout_height = "2dp"
+        android:background = "@color/olin_lightblue"/>
+</LinearLayout>

@@ -9,8 +9,7 @@
         android:layout_width = "@dimen/profile_size"
         android:layout_alignParentLeft="true"
         android:contentDescription="@string/signin_user"
-        android:padding = "@dimen/session_title_padding"
-        android:background = "@drawable/unknown"
+        android:layout_margin = "@dimen/session_title_padding"
         />
 
     <TextView
