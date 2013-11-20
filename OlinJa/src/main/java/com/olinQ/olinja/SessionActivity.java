@@ -194,6 +194,7 @@ public class SessionActivity extends Activity {
     //Show User Settings
     public void showUserSettings(){
         Log.i("InQueue?", String.valueOf(inQueue));
+        //NOT IN QUEUE YET
         if (!inQueue){
             new AlertDialog.Builder(SessionActivity.this)
                     .setTitle("Get in Line!")
@@ -213,73 +214,9 @@ public class SessionActivity extends Activity {
                         }
                     }).show();
         }
-
         else {
-            if (!curUser.needhelp.equals("false")){
-                //Inflate Dialog View
-                final View view = SessionActivity.this.getLayoutInflater().inflate(R.layout.need_help_dialog,null);
-
-                final AlertDialog alert = new AlertDialog.Builder(SessionActivity.this)
-                        .setTitle("What do you need help with?")
-                        .setView(view)
-                        .setPositiveButton("Save Question", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                curUser.needhelp = ((EditText) findViewById(R.id.question_input)).getText().toString();
-                                helpRef.child(username).setValue(curUser);
-                                Toast.makeText(SessionActivity.this, "You've saved your question!", Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).create();
-                alert.findViewById(R.id.leave_queue).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        helpRef.child(username).removeValue();
-                        Toast.makeText(SessionActivity.this, "You've left the queue!", Toast.LENGTH_SHORT).show();
-                        inQueue = false;
-                        alert.dismiss();
-                    }
-                });
-                alert.show();
-            }
-            else {
-                final View view = SessionActivity.this.getLayoutInflater().inflate(R.layout.check_dialog,null);
-
-                final AlertDialog alert = new AlertDialog.Builder(SessionActivity.this)
-                        .setTitle("Settings")
-                        .setView(view)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                curUser.canhelp = "true";
-                                checkRef.child(username).setValue(curUser);
-                                Toast.makeText(SessionActivity.this, "You're available!", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setNegativeButton("No",  new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                curUser.canhelp = "false";
-                                checkRef.child(username).setValue(curUser);
-                                Toast.makeText(SessionActivity.this, "You're not available.", Toast.LENGTH_SHORT).show();
-                            }
-                        }).create();
-                alert.findViewById(R.id.leave_queue).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        checkRef.child(username).removeValue();
-                        Toast.makeText(SessionActivity.this, "You've left the queue!", Toast.LENGTH_SHORT).show();
-                        inQueue = false;
-                        alert.dismiss();
-                    }
-                });
-            }
+            if (!curUser.needhelp.equals("false")) new HelpSettingsDialog(SessionActivity.this, username, curUser).show();
+            else new CheckedSettingsDialog(SessionActivity.this, username, curUser).show();
         }
     }
 
@@ -511,6 +448,7 @@ public class SessionActivity extends Activity {
                     before = dataSnapshot.getName();
                 else if (s.equals(before) && dataSnapshot.getName().equals(username)){
                         notifyUser();}
+                inQueue ^= dataSnapshot.getName().equals(username);
             }
 
             @Override
@@ -520,13 +458,12 @@ public class SessionActivity extends Activity {
                 else{
                     if (s.equals(before) && dataSnapshot.getName().equals(username))
                         notifyUser();}
+                inQueue ^= dataSnapshot.getName().equals(username);
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getName().equals(username)){
-                    inQueue = false;
-                }
+                inQueue = dataSnapshot.getName().equals(username);
             }
 
             @Override
@@ -536,6 +473,7 @@ public class SessionActivity extends Activity {
                 else{
                     if (s.equals(before) && dataSnapshot.getName().equals(username))
                         notifyUser();}
+                inQueue ^= dataSnapshot.getName().equals(username);
             }
 
             @Override
