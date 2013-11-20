@@ -212,7 +212,7 @@ public class MainActivity extends Activity {
             }
             protected String doInBackground(Void... voids) {
                 //Website URL and header configuration
-                String website = "https://olinapps.herokuapp.com/api/exchangelogin";
+                String website = "https://olinapps.herokuapp.com/api/networklogin";
                 HttpPost get_auth = new HttpPost(website);
                 get_auth.setHeader("Content-type","application/json");
 
@@ -245,7 +245,10 @@ public class MainActivity extends Activity {
                 try{
                     auth = new JSONObject(result);
                     JSONObject userID = auth.getJSONObject("user");
-                    username = userID.getString("id");
+                    username = userID.getString("nickname");
+                    if (username.equals("")){
+                        username = userID.getString("name");
+                    }
                 }catch(Exception e){e.printStackTrace(); username = "failed";}
                 return username;
             }
