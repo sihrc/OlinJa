@@ -3,7 +3,7 @@ package com.olinQ.olinja;
 /**
  * Created by chris on 11/18/13.
  */
-public class User {
+public class User{
     String fullname, username, ninja, picture, canhelp, needhelp, notify;
 
     public User(){} //This is required by Firebase - don't remove

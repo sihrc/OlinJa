@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,9 +76,12 @@ public class SessionActivity extends Activity {
         setContentView(R.layout.activity_session);
 
         //Grab sessionId from MainActivity
+        Log.i("Debugger", "onCreate");
         Intent in = getIntent();
         sessionId = in.getStringExtra("id");
         username = in.getStringExtra("username");
+
+        Log.i("Debugger", "Intent received");
 
         //Setup Firebase Reference
         checkedRef = new Firebase(CHECKED_URL + "/" + sessionId);
@@ -85,11 +89,13 @@ public class SessionActivity extends Activity {
         helpRef = new Firebase(HELP_URL + "/" + sessionId);
         userRef = new Firebase(USER_URL + "/" + username);
 
+        Log.i("Debugger", "Firebase References Set-Up");
         //Get User Information
         getFirebaseUserInfo();
+        Log.i("Debugger", "FireBaseUserInfo");
 
-        //SetUp inQueue Checker
-        checkInQueue();
+        /*//SetUp inQueue Checker
+        checkInQueue();*/
     }
 
     @Override
@@ -215,6 +221,7 @@ public class SessionActivity extends Activity {
 
     //Show User Settings
     public void showUserSettings(){
+        Log.i("InQueue?", String.valueOf(inQueue));
         if (!inQueue){
             new AlertDialog.Builder(SessionActivity.this)
                     .setTitle("Get in Line!")
@@ -461,10 +468,13 @@ public class SessionActivity extends Activity {
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                curUser = dataSnapshot.getValue(User.class);
-                if (username.equals(curUser.username)) {
+                Log.i("Debugger Username", username);
+                if (username.equals(dataSnapshot.getValue(User.class).username)) {
+                    curUser = dataSnapshot.getValue(User.class);
+                    Log.i("Debugger", curUser.username);
                     fullname = curUser.fullname;
                     ninja = curUser.ninja.equals("true");
+                    checkInQueue();
                 }
             }
 
@@ -485,12 +495,13 @@ public class SessionActivity extends Activity {
         checkQueue.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                User finding = dataSnapshot.getValue(User.class);
                 if (dataSnapshot.getValue() == null){
                     inQueue = false;
                 }else {
-                    inQueue =  (dataSnapshot.getValue(User.class).username.equals(username));
+                    inQueue =  (finding.username.equals(username));
                 }
-                if (curUser.notify.equals("true")){
+                if (inQueue && finding.notify.equals("true")){
                     notifyUser();
                     curUser.notify = "false";
                     checkRef.child(username).setValue(curUser);
@@ -503,13 +514,16 @@ public class SessionActivity extends Activity {
         helpQueue.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                User finding = dataSnapshot.getValue(User.class);
                 if (dataSnapshot.getValue() == null){
                     inQueue = false;
                 }else {
-                    inQueue =  (dataSnapshot.getValue(User.class).username.equals(username));
+                    inQueue =  (finding.username.equals(username));
                 }
-                if (curUser.notify.equals("true")){
+                if (inQueue && finding.notify.equals("true")){
                     notifyUser();
+                    curUser.notify = "false";
+                    checkRef.child(username).setValue(curUser);
                 }
             }
 

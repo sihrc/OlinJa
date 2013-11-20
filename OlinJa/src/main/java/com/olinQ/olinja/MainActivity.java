@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 
 public class MainActivity extends Activity {
     //For managing the list view of sessions
@@ -40,6 +41,7 @@ public class MainActivity extends Activity {
     //User Information
     String username, fullName, password;
     Boolean ninja;
+    User curUser;
 
     //Connectivity
     ValueEventListener connected;
@@ -168,7 +170,7 @@ public class MainActivity extends Activity {
                 if (dataSnapshot.getValue() == null) {
                     userLogin();
                 } else {
-                User curUser = dataSnapshot.getValue(User.class);
+                curUser = dataSnapshot.getValue(User.class);
                 Log.i("Username at Firebase",username);
                     if (username.equals(curUser.username)) {
                         Log.i("FirebaseLogin", "Logging in");
