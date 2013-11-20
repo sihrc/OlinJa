@@ -1,16 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/user_profile"
+        android:layout_height = "@dimen/profile_size"
+        android:layout_width = "@dimen/profile_size"
+        android:layout_alignParentLeft="true"
+        android:contentDescription="@string/signin_user"
+        android:padding = "@dimen/session_title_padding"
+        android:background = "@drawable/unknown"
+        />
 
     <TextView
         android:id = "@+id/person_name"
+        android:layout_toRightOf="@id/user_profile"
         android:layout_width = "wrap_content"
         android:layout_height = "wrap_content"
+        android:layout_margin = "5dp"
         android:text="@string/session_example_title"
         android:textSize="@dimen/session_font"
-        android:layout_margin="@dimen/activity_horizontal_margin"
         />
 
+    <ImageView
+        android:id = "@+id/help_button"
+        android:layout_marginRight = "10dp"
+        android:background = "@drawable/green_help"
+        android:layout_marginLeft = "10dp"
+        android:layout_alignParentRight="true"
+        android:layout_below = "@id/person_name"
+        android:layout_width = "@dimen/help_button_size"
+        android:layout_height = "@dimen/help_button_size"
+        />
+    <TextView
+        android:id = "@+id/help_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf = "@id/help_button"
+        android:textSize = "@dimen/session_sub_font"
+        android:layout_alignBottom = "@id/help_button"
+        android:text = "@string/dialog_title"/>
 </RelativeLayout>

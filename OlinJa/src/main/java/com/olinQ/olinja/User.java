@@ -4,22 +4,37 @@ package com.olinQ.olinja;
  * Created by chris on 11/18/13.
  */
 public class User {
-    String fullName, username;
-    Boolean ninja;
+    String fullname, username, ninja, picture, canhelp, needhelp, notify;
 
-    public User(String fullName, String username, Boolean ninja){
-        this.fullName = fullName;
+    public User(){} //This is required by Firebase - don't remove
+    public User(String fullname, String username, String ninja, String picture, String canhelp, String needhelp, String notify){
+        this.fullname = fullname;
         this.username = username;
         this.ninja = ninja;
+        this.picture = picture;
+        this.canhelp = canhelp;
+        this.needhelp = needhelp;
     }
 
-    public String getFullName(){
-        return this.fullName;
+    public String getFullname(){
+        return this.fullname;
     }
-    public String getUserName(){
+    public String getUsername(){
         return this.username;
     }
-    public Boolean getNinja(){
+    public String getNinja(){
         return this.ninja;
+    }
+    public String getPicture(){
+        return this.picture;
+    }
+    public String getCanhelp(){
+        return this.canhelp;
+    }
+    public String getNeedhelp(){
+        return this.needhelp;
+    }
+    public String getNotify(){
+        return this.notify;
     }
 }

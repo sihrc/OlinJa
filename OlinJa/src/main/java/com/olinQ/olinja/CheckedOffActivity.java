@@ -30,7 +30,7 @@ public class CheckedOffActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.checked_off);
+        setContentView(R.layout.activity_checkedoff);
 
         //Grab id
         Intent in = getIntent();

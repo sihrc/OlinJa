@@ -26,8 +26,8 @@
     <string name="dialog_create">Create</string>
     <string name="dialog_edit">Edit</string>
 
-    <string name="session_title_checkoff">CheckOff!</string>
-    <string name="session_title_helpMe">HelpMe!</string>
+    <string name="session_title_checkoff">Check me off!</string>
+    <string name="session_title_helpMe">I need help!</string>
     <string name="add_queue">+Q</string>
 
     <string name="checked_off_people">People Who Have Been Checked Off:</string>

@@ -11,7 +11,7 @@ public class Session {
     String assignment,ninja,place,time,duration, date, id;
     long priority;
     
-    public Session(){} //Required by firebase
+    public Session(){} //Required by firebase - don't remove!
     public Session(String assignment, String ninja, String place, String time, String duration, String date){
         this.assignment = assignment;
         this.ninja = ninja;
