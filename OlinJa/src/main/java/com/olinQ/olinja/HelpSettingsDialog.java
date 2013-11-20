@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -33,19 +34,23 @@ public class HelpSettingsDialog extends AlertDialog {
 
     public void onCreate(Bundle savedInstanceState){
         setTitle("What do you need help with?");
-        setButton(BUTTON_POSITIVE, "Save Question", new DialogInterface.OnClickListener() {
+
+        Button save = (Button)findViewById(R.id.save_question);
+        Button cancel = (Button)findViewById(R.id.cancel_question);
+
+        save.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View view) {
                 curUser.needhelp = ((EditText) findViewById(R.id.question_input)).getText().toString();
                 helpRef.child(username).setValue(curUser);
                 Toast.makeText(getContext(), "You've saved your question!", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
+                dismiss();
             }
         });
 
-        setButton(BUTTON_NEGATIVE,"Cancel", new DialogInterface.OnClickListener() {
+        cancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View view) {
                 dismiss();
             }
         });
