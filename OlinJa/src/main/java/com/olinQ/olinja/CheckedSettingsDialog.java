@@ -30,13 +30,13 @@ public class CheckedSettingsDialog extends AlertDialog {
     User curUser;
     String CHECK_URL = "https://olinja-base.firebaseio.com/check/";
 
-    public CheckedSettingsDialog(Context context, String username, User curUser){
+    public CheckedSettingsDialog(Context context, String username, User curUser, String sessionId){
         super(context);
         setContentView(R.layout.check_dialog);
         this.context = context;
         this.username = username;
         this.curUser = curUser;
-        checkRef = new Firebase(CHECK_URL);
+        checkRef = new Firebase(CHECK_URL + sessionId);
     }
 
     public void onCreate(Bundle savedInstanceState){

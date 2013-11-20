@@ -15,14 +15,14 @@ public class NinjaSettingsDialog extends AlertDialog {
 
     public NinjaSettingsDialog(Context context){
         super(context);
-        setContentView(R.layout.ninja_click_dialog);
+        setContentView(R.layout.ninja_settings_dialog);
         this.context = context;
     }
 
     public void onCreate(Bundle savedInstanceState){
         setButton(BUTTON_POSITIVE, "Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {dialog.dismiss();}});
-        getButton(BUTTON_NEGATIVE).setEnabled(false);
+
 
         findViewById(R.id.get_checked_off_list).setOnClickListener(new View.OnClickListener() {
             @Override

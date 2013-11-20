@@ -20,7 +20,7 @@ public class HelpSettingsDialog extends AlertDialog {
     User curUser;
     String HELP_URL = "https://olinja-base.firebaseio.com/help/";
 
-    public HelpSettingsDialog(Context context, String username, User curUser){
+    public HelpSettingsDialog(Context context, String username, User curUser, String sessionId){
         super(context);
         setContentView(R.layout.need_help_dialog);
 
@@ -28,7 +28,7 @@ public class HelpSettingsDialog extends AlertDialog {
         this.username = username;
         this.curUser = curUser;
 
-        this.helpRef = new Firebase(HELP_URL);
+        this.helpRef = new Firebase(HELP_URL + sessionId);
     }
 
     public void onCreate(Bundle savedInstanceState){

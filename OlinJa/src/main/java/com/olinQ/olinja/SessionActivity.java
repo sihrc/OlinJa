@@ -64,11 +64,11 @@ public class SessionActivity extends Activity {
     //Firebase URL Location
     String CHECK_URL = "https://olinja-base.firebaseio.com/check/";
     String HELP_URL = "https://olinja-base.firebaseio.com/help/";
-    String CHECKED_URL = "https://olinja-base.firebaseio.com/help/";
+    String CHECKED_URL = "https://olinja-base.firebaseio.com/checked/";
     String USER_URL = "https://olinja-base.firebaseio.com/users/";
 
     //Firebase References
-    Firebase checkRef, helpRef, checkedRef, userRef;
+    Firebase checkRef, helpRef, checkedRef, userRef, checkRefAdapter, helpRefAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,28 +87,27 @@ public class SessionActivity extends Activity {
         checkedRef = new Firebase(CHECKED_URL + "/" + sessionId);
         checkRef = new Firebase(CHECK_URL + "/" + sessionId);
         helpRef = new Firebase(HELP_URL + "/" + sessionId);
+        checkRefAdapter = new Firebase(CHECK_URL + "/" + sessionId);
+        helpRefAdapter = new Firebase(HELP_URL + "/" + sessionId);
         userRef = new Firebase(USER_URL + "/" + username);
 
         Log.i("Debugger", "Firebase References Set-Up");
         //Get User Information
         getFirebaseUserInfo();
         Log.i("Debugger", "FireBaseUserInfo");
-
-        /*//SetUp inQueue Checker
-        checkInQueue();*/
     }
 
     @Override
     public void onStart(){
         super.onStart();
-
+        checkInQueue();
         //Setup ListView
         checkoffList = (ListView) findViewById(R.id.session_list_checkoff);
         helpmeList = (ListView) findViewById(R.id.session_list_helpMe);
 
         //Setup list adapter
-        checkoffAdapter = new QListAdapter(checkRef,this, R.layout.q_list_item);
-        helpmeAdapter = new QListAdapter(helpRef, this, R.layout.q_list_item);
+        checkoffAdapter = new QListAdapter(checkRefAdapter,this, R.layout.q_list_item);
+        helpmeAdapter = new QListAdapter(helpRefAdapter, this, R.layout.q_list_item);
 
         //Set List Adapter
         checkoffList.setAdapter(checkoffAdapter);
@@ -215,8 +214,8 @@ public class SessionActivity extends Activity {
                     }).show();
         }
         else {
-            if (!curUser.needhelp.equals("false")) new HelpSettingsDialog(SessionActivity.this, username, curUser).show();
-            else new CheckedSettingsDialog(SessionActivity.this, username, curUser).show();
+            if (!curUser.needhelp.equals("false")) new HelpSettingsDialog(SessionActivity.this, username, curUser, sessionId).show();
+            else new CheckedSettingsDialog(SessionActivity.this, username, curUser, sessionId).show();
         }
     }
 
@@ -245,7 +244,7 @@ public class SessionActivity extends Activity {
                     in.putExtra("mode", mode);
                     in.putExtra("session", sessionId);
                     startService(in);*/
-                }
+                } else Toast.makeText(SessionActivity.this, "Hey! You can't line up twice.", Toast.LENGTH_SHORT).show();
             }
         };
     }
@@ -383,7 +382,6 @@ public class SessionActivity extends Activity {
                     Log.i("Debugger", curUser.username);
                     fullname = curUser.fullname;
                     ninja = curUser.ninja.equals("true");
-                    checkInQueue();
                 }
             }
 
@@ -398,9 +396,11 @@ public class SessionActivity extends Activity {
         Firebase checkQueue = new Firebase(CHECK_URL).child(username);
         Firebase helpQueue = new Firebase(HELP_URL).child(username);
 
+        //Checks if you're second in queue
         checkRef.addChildEventListener(checkQueue());
         helpQueue.addChildEventListener(checkQueue());
 
+        //Checks for changes in Queue Status
         checkQueue.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -448,7 +448,6 @@ public class SessionActivity extends Activity {
                     before = dataSnapshot.getName();
                 else if (s.equals(before) && dataSnapshot.getName().equals(username)){
                         notifyUser();}
-                inQueue ^= dataSnapshot.getName().equals(username);
             }
 
             @Override
@@ -458,7 +457,6 @@ public class SessionActivity extends Activity {
                 else{
                     if (s.equals(before) && dataSnapshot.getName().equals(username))
                         notifyUser();}
-                inQueue ^= dataSnapshot.getName().equals(username);
             }
 
             @Override
@@ -473,7 +471,6 @@ public class SessionActivity extends Activity {
                 else{
                     if (s.equals(before) && dataSnapshot.getName().equals(username))
                         notifyUser();}
-                inQueue ^= dataSnapshot.getName().equals(username);
             }
 
             @Override
