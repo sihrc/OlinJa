@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding = "10dp"
+        android:textSize = "@dimen/session_font"
+        android:scaleType="center"
+        android:gravity = "center"
+        android:textColor = "@color/olin_silver"
+        android:background="@color/olin_blue"
+        android:text = "Settings" />
+    <Button
+        android:id="@+id/leave_queue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background = "@android:color/transparent"
+        android:text="Leave the Queue" />
+    <View
+        android:layout_width = "match_parent"
+        android:layout_height = "2dp"
+        android:background = "@color/olin_lightblue"/>
+    <TextView
+        android:layout_marginTop = "5dp"
+        android:layout_width="match_parent"
+        android:layout_marginLeft = "5dp"
+        android:layout_height="wrap_content"
+        android:text = "I need help with: "/>
+    <EditText
+        android:id="@+id/question_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:textSize = "@dimen/session_sub_font"
+        android:layout_gravity="center_vertical"
+        android:gravity = "center"
+        android:hint="Input what you need help with" />
+    <View
+        android:layout_width = "match_parent"
+        android:layout_height = "2dp"
+        android:background = "@color/olin_lightblue"/>
+</LinearLayout>

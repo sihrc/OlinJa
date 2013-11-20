@@ -61,7 +61,7 @@ public class QListAdapter extends FireBaseAdapter<User> {
     //Grab profile picture
     public static Drawable LoadImageFromWebOperations(String url) {
         try {
-        return Drawable.createFromStream((InputStream) new URL("https://olinapps.herokuapp.com/" + url).getContent(), "src name");
+        return Drawable.createFromStream((InputStream) new URL("http://www.olinapps.com/" + url).getContent(), "src name");
         } catch (Exception e) {e.printStackTrace();return null;}
     }
 }

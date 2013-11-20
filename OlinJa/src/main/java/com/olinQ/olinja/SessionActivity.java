@@ -1,10 +1,13 @@
 package com.olinQ.olinja;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -13,7 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.ChildEventListener;
@@ -45,6 +50,9 @@ public class SessionActivity extends Activity {
     //Username
     String username, fullname;
     User curUser;
+
+    //OnClick Selected
+    User selected;
 
     //Session Id
     String sessionId;
@@ -104,13 +112,13 @@ public class SessionActivity extends Activity {
         checkoffList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                checkOffNinjee(position, "check");
+                selectUser(position, "check");
             }
         });
         helpmeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                checkOffNinjee(position, "help");
+                selectUser(position, "help");
             }
         });
 
@@ -134,8 +142,8 @@ public class SessionActivity extends Activity {
         helpAdd = (Button) findViewById(R.id.helpMe_add_queue);
 
         //Add click listeners
-        checkAdd.setOnClickListener(selectUser("check"));
-        helpAdd.setOnClickListener(selectUser("help"));
+        checkAdd.setOnClickListener(addToQueue("check"));
+        helpAdd.setOnClickListener(addToQueue("help"));
     }
 
     @Override
@@ -160,52 +168,271 @@ public class SessionActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()){
-            case R.id.action_checked:
-                Intent in = new Intent(this, CheckedOffActivity.class);
-                startActivityForResult(in, 0);
+            case R.id.settings:
+                if (ninja){
+                    showNinjaSettings();
+                }
+                else {
+                    showUserSettings();
+                }
+
         }
         return super.onOptionsItemSelected(item);
     }
 
+    //Show Ninja Settings
+    public void showNinjaSettings(){
+        //Inflate Dialog View
+        final View view = SessionActivity.this.getLayoutInflater().inflate(R.layout.ninja_click_dialog,null);
+
+        //Build AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(SessionActivity.this)
+                .setView(view)
+                .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+
+        //Create the dialog
+        final AlertDialog dialog = builder.create();
+
+        //Buttons
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setEnabled(false);
+        dialog.findViewById(R.id.get_checked_off_list).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(SessionActivity.this, CheckedOffActivity.class);
+                startActivityForResult(in, 0);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    //Show User Settings
+    public void showUserSettings(){
+        if (!inQueue){
+            new AlertDialog.Builder(SessionActivity.this)
+                    .setTitle("Get in Line!")
+                    .setMessage("Which line would you like to queue up in? You only get to choose 1 at a time!")
+                    .setPositiveButton("I need help", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            addToQueue("help");
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("Get checked off", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            addToQueue("check");
+                            dialog.dismiss();
+                        }
+                    }).show();
+        }
+
+        else {
+            if (!curUser.needhelp.equals("false")){
+                //Inflate Dialog View
+                final View view = SessionActivity.this.getLayoutInflater().inflate(R.layout.need_help_dialog,null);
+
+                final AlertDialog alert = new AlertDialog.Builder(SessionActivity.this)
+                        .setTitle("What do you need help with?")
+                        .setView(view)
+                        .setPositiveButton("Save Question", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                curUser.needhelp = ((EditText) findViewById(R.id.question_input)).getText().toString();
+                                helpRef.child(username).setValue(curUser);
+                                Toast.makeText(SessionActivity.this, "You've saved your question!", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).create();
+                alert.findViewById(R.id.leave_queue).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        helpRef.child(username).removeValue();
+                        Toast.makeText(SessionActivity.this, "You've left the queue!", Toast.LENGTH_SHORT).show();
+                        inQueue = false;
+                        alert.dismiss();
+                    }
+                });
+                alert.show();
+            }
+            else {
+                final View view = SessionActivity.this.getLayoutInflater().inflate(R.layout.check_dialog,null);
+
+                final AlertDialog alert = new AlertDialog.Builder(SessionActivity.this)
+                        .setTitle("Settings")
+                        .setView(view)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                curUser.canhelp = "true";
+                                checkRef.child(username).setValue(curUser);
+                                Toast.makeText(SessionActivity.this, "You're available!", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("No",  new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                curUser.canhelp = "false";
+                                checkRef.child(username).setValue(curUser);
+                                Toast.makeText(SessionActivity.this, "You're not available.", Toast.LENGTH_SHORT).show();
+                            }
+                        }).create();
+                alert.findViewById(R.id.leave_queue).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        checkRef.child(username).removeValue();
+                        Toast.makeText(SessionActivity.this, "You've left the queue!", Toast.LENGTH_SHORT).show();
+                        inQueue = false;
+                        alert.dismiss();
+                    }
+                });
+            }
+        }
+    }
+
     //Add to Queue - Button listeners
-    public View.OnClickListener selectUser(final String mode){
+    public View.OnClickListener addToQueue(final String mode){
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ninja) showNinjaSelect();
-                else showUserSelect();
-/*                Firebase pushref;
-                if (!inQueue && !ninja){
-                    if (mode.equals("check")){
-                        pushref = checkRef.child(username);
-                        curUser.canhelp = "false";
-                        curUser.needhelp = "false";
-                        Toast.makeText(SessionActivity.this, "You're in Queue to get checked off! I'll let you know when it's almost your turn.", Toast.LENGTH_LONG).show();}
-                    else{
-                        pushref = helpRef.child(username);
-                        Toast.makeText(SessionActivity.this, "You're in Queue to get help! I'll let you know when it's almost your turn.", Toast.LENGTH_LONG).show();
-                    }
-                    pushref.setValue(curUser);
-                    inQueue = true;*/
-                    //Start Notification Service for when name in Queue is first.
-/*                    Intent in = new Intent(SessionActivity.this, NotificationService.class);
+            Firebase pushref;
+            if (!inQueue && !ninja){
+                if (mode.equals("check")){
+                    pushref = checkRef.child(username);
+                    curUser.canhelp = "false";
+                    curUser.needhelp = "false";
+                    Toast.makeText(SessionActivity.this, "I'll let you know when it's your turn! In the meantime, specify if you can help others in settings!", Toast.LENGTH_LONG).show();}
+                else{
+                    pushref = helpRef.child(username);
+                    curUser.needhelp = "true";
+                    Toast.makeText(SessionActivity.this, "I'll let you know when a ninja is ready for you. In the meantime, specify what question you need help on in settings.", Toast.LENGTH_LONG).show();
+                }
+                pushref.setValue(curUser);
+                inQueue = true;
+                //Start Notification Service for when name in Queue is first.
+                    /*Intent in = new Intent(SessionActivity.this, NotificationService.class);
                     in.putExtra("id",name);
                     in.putExtra("mode", mode);
                     in.putExtra("session", sessionId);
                     startService(in);*/
-                }
             }
         };
+    };
     }
 
-    //Ninja Select user dialog
-    public void showNinjaSelect(){
+    //ListView OnClickListener
+    public View.OnClickListener selectUser(final int position, final String mode){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ninja) showNinjaSelect(position, mode);
+                else showUserSelect(position, mode);
+              }
+            };
+    }
 
+
+    //Ninja Select user dialog
+    public void showNinjaSelect(final int position, final String mode){
+        //Inflate Dialog View
+        final View view = SessionActivity.this.getLayoutInflater().inflate(R.layout.ninja_click_dialog,null);
+
+        //Build AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(SessionActivity.this)
+                .setView(view)
+                .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+
+        //Create the dialog
+        final AlertDialog dialog = builder.create();
+
+        //Set Buttons
+        if (mode.equals("check"))
+            selected = (User) checkoffAdapter.getItem(position);
+        else
+            selected = (User) helpmeAdapter.getItem(position);
+
+        //Buttons
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setEnabled(false);
+        dialog.findViewById(R.id.checkoff_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkOffNinjee(position, mode);
+                Toast.makeText(SessionActivity.this, "You've checked off " + selected.username, Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        dialog.findViewById(R.id.notify_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selected.notify = "true";
+                if (mode.equals("check")) checkRef.child(selected.username).setValue(selected);
+                else helpRef.child(selected.username).setValue(selected);
+                Toast.makeText(SessionActivity.this, "You've notified " + selected.username, Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        dialog.findViewById(R.id.remove_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mode.equals("check")) checkRef.child(selected.username).removeValue();
+                else helpRef.child(selected.username).removeValue();
+                Toast.makeText(SessionActivity.this, "You've removed " + selected.username + " from queue.", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        ((TextView)dialog.findViewById(R.id.ninja_click_title)).setText(selected.fullname);
+        dialog.show();
     }
 
     //User Select user Dialog
-    public void showUserSelect(){
+    public void showUserSelect(int position, final String mode){
+        //Getting who is selected
+        if (mode.equals("check"))
+            selected = (User) checkoffAdapter.getItem(position);
+        else
+            selected = (User) helpmeAdapter.getItem(position);
 
+        if (selected.username.equals(username))
+            new AlertDialog.Builder(SessionActivity.this)
+                    .setTitle("Leave session?")
+                    .setMessage("Are you sure you want to remove yourself from the queue?")
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (mode.equals("check"))
+                                checkRef.child(username).removeValue();
+                            else
+                                helpRef.child(username).removeValue();
+                            dialog.dismiss();
+                        }
+                    }).show();
     }
 
     //Check off Ninjee
@@ -265,6 +492,8 @@ public class SessionActivity extends Activity {
                 }
                 if (curUser.notify.equals("true")){
                     notifyUser();
+                    curUser.notify = "false";
+                    checkRef.child(username).setValue(curUser);
                 }
             }
 
