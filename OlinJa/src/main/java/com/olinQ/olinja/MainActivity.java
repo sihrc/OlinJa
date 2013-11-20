@@ -276,7 +276,7 @@ public class MainActivity extends Activity {
                 } else {
                     userRef = new Firebase(FIREBASE_URL).child("users").child(username);
                     String parts[] = fullName.split("#");
-                    userRef.setValue(new User(parts[0], username, String.valueOf(ninja),parts[1],"false","false"));
+                    userRef.setValue(new User(parts[0], username, String.valueOf(ninja),parts[1],"false","false","false"));
                     MainActivity.this.getSharedPreferences("OlinJa",MODE_PRIVATE).edit().putString("userId", username).commit();
                     Toast.makeText(MainActivity.this, "Authentication success :)", Toast.LENGTH_SHORT).show();
                     getFirebaseUserInfo();

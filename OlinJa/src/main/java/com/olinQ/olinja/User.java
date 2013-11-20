@@ -4,10 +4,10 @@ package com.olinQ.olinja;
  * Created by chris on 11/18/13.
  */
 public class User {
-    String fullname, username, ninja, picture, canhelp, needhelp;
+    String fullname, username, ninja, picture, canhelp, needhelp, notify;
 
     public User(){} //This is required by Firebase - don't remove
-    public User(String fullname, String username, String ninja, String picture, String canhelp, String needhelp){
+    public User(String fullname, String username, String ninja, String picture, String canhelp, String needhelp, String notify){
         this.fullname = fullname;
         this.username = username;
         this.ninja = ninja;
@@ -33,5 +33,8 @@ public class User {
     }
     public String getNeedhelp(){
         return this.needhelp;
+    }
+    public String getNotify(){
+        return this.notify;
     }
 }

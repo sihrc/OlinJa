@@ -30,7 +30,7 @@ public class QListAdapter extends FireBaseAdapter<User> {
 
         //Set the name
         person.setText(queueItem.fullname);
-        
+
         //Setting help and helpLight
         if (queueItem.needhelp.equals("false")){ //If person does not need help / is in check off queue
             helpLight.setVisibility(View.VISIBLE);

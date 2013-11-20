@@ -134,8 +134,8 @@ public class SessionActivity extends Activity {
         helpAdd = (Button) findViewById(R.id.helpMe_add_queue);
 
         //Add click listeners
-        checkAdd.setOnClickListener(addToQueue("check"));
-        helpAdd.setOnClickListener(addToQueue("help"));
+        checkAdd.setOnClickListener(selectUser("check"));
+        helpAdd.setOnClickListener(selectUser("help"));
     }
 
     @Override
@@ -168,21 +168,25 @@ public class SessionActivity extends Activity {
     }
 
     //Add to Queue - Button listeners
-    public View.OnClickListener addToQueue(final String mode){
+    public View.OnClickListener selectUser(final String mode){
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Firebase pushref;
+                if (ninja) showNinjaSelect();
+                else showUserSelect();
+/*                Firebase pushref;
                 if (!inQueue && !ninja){
                     if (mode.equals("check")){
                         pushref = checkRef.child(username);
+                        curUser.canhelp = "false";
+                        curUser.needhelp = "false";
                         Toast.makeText(SessionActivity.this, "You're in Queue to get checked off! I'll let you know when it's almost your turn.", Toast.LENGTH_LONG).show();}
                     else{
                         pushref = helpRef.child(username);
                         Toast.makeText(SessionActivity.this, "You're in Queue to get help! I'll let you know when it's almost your turn.", Toast.LENGTH_LONG).show();
                     }
                     pushref.setValue(curUser);
-                    inQueue = true;
+                    inQueue = true;*/
                     //Start Notification Service for when name in Queue is first.
 /*                    Intent in = new Intent(SessionActivity.this, NotificationService.class);
                     in.putExtra("id",name);
@@ -192,6 +196,16 @@ public class SessionActivity extends Activity {
                 }
             }
         };
+    }
+
+    //Ninja Select user dialog
+    public void showNinjaSelect(){
+
+    }
+
+    //User Select user Dialog
+    public void showUserSelect(){
+
     }
 
     //Check off Ninjee
@@ -249,6 +263,9 @@ public class SessionActivity extends Activity {
                 }else {
                     inQueue =  (dataSnapshot.getValue(User.class).username.equals(username));
                 }
+                if (curUser.notify.equals("true")){
+                    notifyUser();
+                }
             }
 
             @Override
@@ -262,6 +279,9 @@ public class SessionActivity extends Activity {
                 }else {
                     inQueue =  (dataSnapshot.getValue(User.class).username.equals(username));
                 }
+                if (curUser.notify.equals("true")){
+                    notifyUser();
+                }
             }
 
             @Override
@@ -274,8 +294,7 @@ public class SessionActivity extends Activity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (s == null)
                     before = dataSnapshot.getName();
-                else{
-                    if (s.equals(before) && dataSnapshot.getName().equals(username))
+                else if (s.equals(before) && dataSnapshot.getName().equals(username)){
                         notifyUser();}
             }
 
