@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:text = "@string/notify"/>
+        android:text = "@string/remove"/>
     <View
         android:layout_width = "match_parent"
         android:layout_height = "1dp"
