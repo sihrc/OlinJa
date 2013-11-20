@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -114,7 +113,7 @@ public class MainActivity extends Activity {
 
     //Dialog for adding a session
     public void showAddSessionDialog(){
-        SessionDialog showDialog = new SessionDialog(MainActivity.this, username);
+        SessionDialog showDialog = new SessionDialog(MainActivity.this, fullName);
         showDialog.show();
     }
 
@@ -156,13 +155,13 @@ public class MainActivity extends Activity {
             userLogin();
         } else {
             if (fullName == null){
-                userRef = new Firebase(FIREBASE_URL).child("users").child(username);
                 Toast.makeText(this,"Logging in... wait a sec!",Toast.LENGTH_SHORT).show();
                 getFirebaseUserInfo();
             }
         }
     }
     public void getFirebaseUserInfo(){
+        userRef = new Firebase(FIREBASE_URL).child("users").child(username);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -189,7 +188,7 @@ public class MainActivity extends Activity {
     }
     public void userLogin(){
         //Inflate Dialog View
-        final View view = MainActivity.this.getLayoutInflater().inflate(R.layout.signin_main,null);
+        final View view = MainActivity.this.getLayoutInflater().inflate(R.layout.signin_dialog,null);
         //Prompt for username and password
         new AlertDialog.Builder(MainActivity.this)
                 .setView(view)
@@ -197,18 +196,20 @@ public class MainActivity extends Activity {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         EditText userInput = (EditText) view.findViewById(R.id.username);
                         EditText passInput = (EditText) view.findViewById(R.id.password);
-                        MainActivity.this.username = userInput.getText().toString();
-                        MainActivity.this.password = passInput.getText().toString();
-                        MainActivity.this.ninja = true;
+                        username = userInput.getText().toString();
+                        getSharedPreferences("OlinJa",MODE_PRIVATE).edit().putString("userId", username).commit();
+                        password = passInput.getText().toString();
+                        ninja = true;
                         authenticate();
                     }
                 }).setNegativeButton("Student", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                         EditText userInput = (EditText) view.findViewById(R.id.username);
                         EditText passInput = (EditText) view.findViewById(R.id.password);
-                        MainActivity.this.username = userInput.getText().toString();
-                        MainActivity.this.password = passInput.getText().toString();
-                        MainActivity.this.ninja = false;
+                        username = userInput.getText().toString();
+                        getSharedPreferences("OlinJa",MODE_PRIVATE).edit().putString("userId", username).commit();
+                        password = passInput.getText().toString();
+                        ninja = false;
                         authenticate();
             }
         }).show();
@@ -268,13 +269,15 @@ public class MainActivity extends Activity {
                 return username;
             }
             protected void onPostExecute(String fullName){
-                if (username.equals("failed")){
+                if (fullName.equals("failed")){
                     Toast.makeText(MainActivity.this, "Authentication failed :(", Toast.LENGTH_SHORT).show();
                     userLogin();
                 } else {
+                    userRef = new Firebase(FIREBASE_URL).child("users").child(username);
                     userRef.setValue(new User(fullName, username, String.valueOf(ninja)));
                     MainActivity.this.getSharedPreferences("OlinJa",MODE_PRIVATE).edit().putString("userId", username).commit();
                     Toast.makeText(MainActivity.this, "Authentication success :)", Toast.LENGTH_SHORT).show();
+                    getFirebaseUserInfo();
                 }
             }
         }.execute();

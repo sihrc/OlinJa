@@ -1,18 +1,19 @@
 package com.olinQ.olinja;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.NotificationCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.ChildEventListener;
@@ -20,8 +21,6 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-
-import java.text.ParseException;
 
 /**
  * Created by chris on 11/17/13.
@@ -34,6 +33,7 @@ public class SessionActivity extends Activity {
 
     //Add to queue Buttons
     Button checkAdd, helpAdd;
+    String before; //check before queue
 
     //If Ninja
     Boolean ninja;
@@ -62,7 +62,7 @@ public class SessionActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.session_detail_view);
+        setContentView(R.layout.activity_session);
 
         //Grab sessionId from MainActivity
         Intent in = getIntent();
@@ -80,8 +80,6 @@ public class SessionActivity extends Activity {
 
         //SetUp inQueue Checker
         checkInQueue();
-
-
     }
 
     @Override
@@ -174,13 +172,15 @@ public class SessionActivity extends Activity {
             public void onClick(View v) {
                 Firebase pushref;
                 if (!inQueue && !ninja){
-                    if (mode.equals("check"))
+                    if (mode.equals("check")){
                         pushref = checkRef.child(username);
-                    else
+                        Toast.makeText(SessionActivity.this, "You're in Queue to get checked off! I'll let you know when it's almost your turn.", Toast.LENGTH_LONG).show();}
+                    else{
                         pushref = helpRef.child(username);
+                        Toast.makeText(SessionActivity.this, "You're in Queue to get help! I'll let you know when it's almost your turn.", Toast.LENGTH_LONG).show();
+                    }
                     pushref.setValue(new User(username,fullname, String.valueOf(ninja)));
                     inQueue = true;
-
                     //Start Notification Service for when name in Queue is first.
 /*                    Intent in = new Intent(SessionActivity.this, NotificationService.class);
                     in.putExtra("id",name);
@@ -222,7 +222,6 @@ public class SessionActivity extends Activity {
                 if (username.equals(curUser.username)) {
                     fullname = curUser.fullname;
                     ninja = curUser.ninja.equals("true");
-                    Toast.makeText(SessionActivity.this, "Entering ninja session as " + fullname, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -236,6 +235,9 @@ public class SessionActivity extends Activity {
     public void checkInQueue(){
         Firebase checkQueue = new Firebase(CHECK_URL).child(username);
         Firebase helpQueue = new Firebase(HELP_URL).child(username);
+
+        checkRef.addChildEventListener(checkQueue());
+        helpQueue.addChildEventListener(checkQueue());
 
         checkQueue.addValueEventListener(new ValueEventListener() {
             @Override
@@ -264,6 +266,63 @@ public class SessionActivity extends Activity {
             public void onCancelled(FirebaseError firebaseError) {}
         });
     }
+    public ChildEventListener checkQueue(){
+        return new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (s == null)
+                    before = dataSnapshot.getName();
+                else{
+                    if (s.equals(before) && dataSnapshot.getName().equals(username))
+                        notifyUser();}
+            }
 
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                if (s == null)
+                    before = dataSnapshot.getName();
+                else{
+                    if (s.equals(before) && dataSnapshot.getName().equals(username))
+                        notifyUser();}
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getName().equals(username)){
+                    inQueue = false;
+                }
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                if (s == null)
+                    before = dataSnapshot.getName();
+                else{
+                    if (s.equals(before) && dataSnapshot.getName().equals(username))
+                        notifyUser();}
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        };
+    }
+    public void notifyUser(){
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(this);
+        notification.setSmallIcon(R.drawable.olinja).setContentTitle("You're up!").setContentText("You're next in line. Come quick!");
+
+        Intent resultIntent = new Intent(this, SessionActivity.class);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(SessionActivity.class);
+        stackBuilder.addNextIntent(resultIntent);
+
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        notification.setContentIntent(resultPendingIntent);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0,notification.build());
+    }
 }
 
