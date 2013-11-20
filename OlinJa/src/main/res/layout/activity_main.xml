@@ -8,7 +8,7 @@
     <TextView
         android:id = "@+id/all_session_title"
         android:background="@color/olin_blue"
-        android:textColor="#fdfdfd"
+        android:textColor="@color/olin_white"
         android:layout_width = "fill_parent"
         android:padding = "@dimen/session_title_padding"
         android:layout_height = "wrap_content"
@@ -21,7 +21,6 @@
         android:layout_height = "match_parent"
         android:layout_width = "match_parent"
         android:divider="@color/divider_color"
-        android:padding="@dimen/activity_vertical_margin"
         android:layout_below="@+id/all_session_title"
         />
 

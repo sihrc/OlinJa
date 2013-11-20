@@ -15,7 +15,7 @@
         android:padding = "@dimen/dialog_title"
         android:text = "@string/dialog_title"
         android:textSize = "@dimen/session_font"
-        android:background = "@android:color/black"
+        android:background = "@color/olin_blue"
         android:textColor="@android:color/white"/>
 
     <TextView
