@@ -188,37 +188,7 @@ public class SessionActivity extends Activity {
 
     //Show Ninja Settings
     public void showNinjaSettings(){
-        AlertDialog dialog = new NinjaSettingsDialog(SessionActivity.this);
-
-        //Inflate Dialog View
-        final View view = SessionActivity.this.getLayoutInflater().inflate(R.layout.ninja_click_dialog,null);
-
-        //Build AlertDialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(SessionActivity.this)
-                .setView(view)
-                .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.dismiss();
-                    }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    }
-                });
-
-        //Create the dialog
-        final AlertDialog dialog = builder.create();
-
-        //Buttons
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setEnabled(false);
-        dialog.findViewById(R.id.get_checked_off_list).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent in = new Intent(SessionActivity.this, CheckedOffActivity.class);
-                startActivityForResult(in, 0);
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+        new NinjaSettingsDialog(SessionActivity.this).show();
     }
 
     //Show User Settings
