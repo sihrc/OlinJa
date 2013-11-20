@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +28,7 @@ public class SessionActivity extends Activity {
     QListAdapter checkoffAdapter, helpmeAdapter;
 
     //Add to queue Buttons
-    TextView checkAdd, helpAdd;
+    ImageButton checkAdd, helpAdd;
 
     //If Ninja
     Boolean ninja;
@@ -115,8 +116,8 @@ public class SessionActivity extends Activity {
         });
 
         //AddToQueue Buttons
-        checkAdd = (TextView) findViewById(R.id.checkoff_add_queue);
-        helpAdd = (TextView) findViewById(R.id.helpMe_add_queue);
+        checkAdd = (ImageButton) findViewById(R.id.checkoff_add_queue);
+        helpAdd = (ImageButton) findViewById(R.id.helpMe_add_queue);
 
         //Add click listeners
         checkAdd.setOnClickListener(addToQueue("check"));
