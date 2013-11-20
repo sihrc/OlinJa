@@ -21,6 +21,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.firebase.client.snapshot.Node;
 
 /**
  * Created by chris on 11/17/13.
@@ -43,6 +44,7 @@ public class SessionActivity extends Activity {
 
     //Username
     String username, fullname;
+    User curUser;
 
     //Session Id
     String sessionId;
@@ -179,7 +181,7 @@ public class SessionActivity extends Activity {
                         pushref = helpRef.child(username);
                         Toast.makeText(SessionActivity.this, "You're in Queue to get help! I'll let you know when it's almost your turn.", Toast.LENGTH_LONG).show();
                     }
-                    pushref.setValue(new User(username,fullname, String.valueOf(ninja)));
+                    pushref.setValue(curUser);
                     inQueue = true;
                     //Start Notification Service for when name in Queue is first.
 /*                    Intent in = new Intent(SessionActivity.this, NotificationService.class);
@@ -218,7 +220,7 @@ public class SessionActivity extends Activity {
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                User curUser = dataSnapshot.getValue(User.class);
+                curUser = dataSnapshot.getValue(User.class);
                 if (username.equals(curUser.username)) {
                     fullname = curUser.fullname;
                     ninja = curUser.ninja.equals("true");

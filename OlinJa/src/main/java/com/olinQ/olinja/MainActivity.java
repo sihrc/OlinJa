@@ -265,6 +265,7 @@ public class MainActivity extends Activity {
                     if (username.equals("")){
                         username = userID.getString("name");
                     }
+                    username += "#" + userID.getString("thumbnail");
                 }catch(Exception e){e.printStackTrace(); username = "failed";}
                 return username;
             }
@@ -274,7 +275,8 @@ public class MainActivity extends Activity {
                     userLogin();
                 } else {
                     userRef = new Firebase(FIREBASE_URL).child("users").child(username);
-                    userRef.setValue(new User(fullName, username, String.valueOf(ninja)));
+                    String parts[] = fullName.split("#");
+                    userRef.setValue(new User(fullName, parts[0], String.valueOf(ninja),parts[2],"false","false"));
                     MainActivity.this.getSharedPreferences("OlinJa",MODE_PRIVATE).edit().putString("userId", username).commit();
                     Toast.makeText(MainActivity.this, "Authentication success :)", Toast.LENGTH_SHORT).show();
                     getFirebaseUserInfo();
