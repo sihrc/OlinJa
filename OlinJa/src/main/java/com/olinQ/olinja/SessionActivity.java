@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,6 +21,8 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import java.text.ParseException;
+
 /**
  * Created by chris on 11/17/13.
  */
@@ -30,7 +33,7 @@ public class SessionActivity extends Activity {
     QListAdapter checkoffAdapter, helpmeAdapter;
 
     //Add to queue Buttons
-    ImageButton checkAdd, helpAdd;
+    Button checkAdd, helpAdd;
 
     //If Ninja
     Boolean ninja;
@@ -53,28 +56,32 @@ public class SessionActivity extends Activity {
     String CHECKED_URL = "https://olinja-base.firebaseio.com/help/";
     String USER_URL = "https://olinja-base.firebaseio.com/users/";
 
-
+    //Firebase References
     Firebase checkRef, helpRef, checkedRef, userRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.session_detail_view);
-        //Grab username
-        setupUsername();
-        updateUser();
-        //Grab id
+
+        //Grab sessionId from MainActivity
         Intent in = getIntent();
         sessionId = in.getStringExtra("id");
+        username = in.getStringExtra("username");
 
         //Setup Firebase Reference
         checkedRef = new Firebase(CHECKED_URL + "/" + sessionId);
         checkRef = new Firebase(CHECK_URL + "/" + sessionId);
         helpRef = new Firebase(HELP_URL + "/" + sessionId);
+        userRef = new Firebase(USER_URL + "/" + username);
 
-        //User Info
-        updateUser();
+        //Get User Information
         getFirebaseUserInfo();
+
+        //SetUp inQueue Checker
+        checkInQueue();
+
+
     }
 
     @Override
@@ -123,39 +130,14 @@ public class SessionActivity extends Activity {
         });
 
         //AddToQueue Buttons
-        checkAdd = (ImageButton) findViewById(R.id.checkoff_add_queue);
-        helpAdd = (ImageButton) findViewById(R.id.helpMe_add_queue);
+        checkAdd = (Button) findViewById(R.id.checkoff_add_queue);
+        helpAdd = (Button) findViewById(R.id.helpMe_add_queue);
 
         //Add click listeners
         checkAdd.setOnClickListener(addToQueue("check"));
         helpAdd.setOnClickListener(addToQueue("help"));
     }
 
-    public View.OnClickListener addToQueue(final String mode){
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Firebase pushref;
-                if (!inQueue && !ninja){
-                    if (mode.equals("check"))
-                        pushref = checkRef.push();
-                    else
-                        pushref = helpRef.push();
-                    pushref.setValue(new User(username,fullname, String.valueOf(ninja)));
-                    pushref.setValue(new User(username,fullname, "false"));
-
-                    inQueue = true;
-
-                    //Start Notification Service for when name in Queue is first.
-/*                    Intent in = new Intent(SessionActivity.this, NotificationService.class);
-                    in.putExtra("id",name);
-                    in.putExtra("mode", mode);
-                    in.putExtra("session", sessionId);
-                    startService(in);*/
-                }
-            }
-        };
-    }
     @Override
     public void onStop(){
         super.onStop();
@@ -184,38 +166,30 @@ public class SessionActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
-    //Setup Username
-    private void setupUsername() {
-        SharedPreferences prefs = getApplication().getSharedPreferences("OlinJa", 0);
-        username = prefs.getString("username", null);
-        ninja = prefs.getString("ninja","false").equals("true");
-        Firebase checkQueue = new Firebase(CHECK_URL);
-        Firebase helpQueue = new Firebase(CHECK_URL);
 
-        checkQueue.addValueEventListener(new ValueEventListener() {
+    //Add to Queue - Button listeners
+    public View.OnClickListener addToQueue(final String mode){
+        return new View.OnClickListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                inQueue ^= (dataSnapshot.getValue() == null);
+            public void onClick(View v) {
+                Firebase pushref;
+                if (!inQueue && !ninja){
+                    if (mode.equals("check"))
+                        pushref = checkRef.child(username);
+                    else
+                        pushref = helpRef.child(username);
+                    pushref.setValue(new User(username,fullname, String.valueOf(ninja)));
+                    inQueue = true;
+
+                    //Start Notification Service for when name in Queue is first.
+/*                    Intent in = new Intent(SessionActivity.this, NotificationService.class);
+                    in.putExtra("id",name);
+                    in.putExtra("mode", mode);
+                    in.putExtra("session", sessionId);
+                    startService(in);*/
+                }
             }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-        helpQueue.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                inQueue ^= (dataSnapshot.getValue() == null);
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-        inQueue = false;
-
+        };
     }
 
     //Check off Ninjee
@@ -238,43 +212,58 @@ public class SessionActivity extends Activity {
             pushref.setValue(curItem);
         }
     }
-    //Update user info
-    public void updateUser(){
-        SharedPreferences prefs = getApplication().getSharedPreferences("OlinJa",0);
-        username = prefs.getString("userId", null);
-        getFirebaseUserInfo();
-        if (prefs.getString("ninja","false").equals("false")){
-            ninja = false;
-        } else {ninja = true;}
-    }
 
+    //Firebase user info pull
     public void getFirebaseUserInfo(){
-        userRef = new Firebase(USER_URL);
-        userRef.addChildEventListener(new ChildEventListener() {
+        userRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 User curUser = dataSnapshot.getValue(User.class);
-                Log.i("Username at Firebase", username);
                 if (username.equals(curUser.username)) {
-                    Log.i("FirebaseLogin", "Logging in");
                     fullname = curUser.fullname;
                     ninja = curUser.ninja.equals("true");
+                    Toast.makeText(SessionActivity.this, "Entering ninja session as " + fullname, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+    }
+
+    //Check if in Queue
+    public void checkInQueue(){
+        Firebase checkQueue = new Firebase(CHECK_URL).child(username);
+        Firebase helpQueue = new Firebase(HELP_URL).child(username);
+
+        checkQueue.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null){
+                    inQueue = false;
+                }else {
+                    inQueue =  (dataSnapshot.getValue(User.class).username.equals(username));
+                }
+            }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {}
-
+            public void onCancelled(FirebaseError firebaseError) {}
+        });
+        helpQueue.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null){
+                    inQueue = false;
+                }else {
+                    inQueue =  (dataSnapshot.getValue(User.class).username.equals(username));
+                }
+            }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {}
         });
     }
-    //Check if in Queue
+
 }
 

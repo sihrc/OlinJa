@@ -44,11 +44,11 @@ public class MainActivity extends Activity {
 
     //Connectivity
     ValueEventListener connected;
-    ChildEventListener userListener;
 
     //Firebase URL Location
     String FIREBASE_URL = "https://olinja-base.firebaseio.com";
 
+    //Firebase References
     Firebase sessionRef;
     Firebase userRef;
 
@@ -57,13 +57,11 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Setup Firebase References
+        sessionRef = new Firebase(FIREBASE_URL).child("sessions");
+
         //Check for username
         checkIfUser();
-
-
-        //Setup Firebase Reference
-        sessionRef = new Firebase(FIREBASE_URL).child("sessions");
-        userRef = new Firebase(FIREBASE_URL).child("users");
     }
 
     @Override
@@ -85,6 +83,7 @@ public class MainActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent in = new Intent (MainActivity.this, SessionActivity.class);
                 in.putExtra("id", ((Session)sessionAdapter.getItem(position)).id);
+                in.putExtra("username", username);
                 startActivity(in);
             }
         });
@@ -157,34 +156,32 @@ public class MainActivity extends Activity {
             userLogin();
         } else {
             if (fullName == null){
+                userRef = new Firebase(FIREBASE_URL).child("users").child(username);
                 Toast.makeText(this,"Logging in... wait a sec!",Toast.LENGTH_SHORT).show();
                 getFirebaseUserInfo();
             }
         }
     }
     public void getFirebaseUserInfo(){
-        userRef = new Firebase(FIREBASE_URL).child("users");
-        userListener = userRef.addChildEventListener(new ChildEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    userLogin();
+                } else {
                 User curUser = dataSnapshot.getValue(User.class);
                 Log.i("Username at Firebase",username);
-                if (username.equals(curUser.username)) {
-                    Log.i("FirebaseLogin", "Logging in");
-                    fullName = curUser.fullname;
-                    ninja = curUser.ninja.equals("true");
-                    Toast.makeText(MainActivity.this, "You've been logged in as " + fullName, Toast.LENGTH_SHORT).show();
+                    if (username.equals(curUser.username)) {
+                        Log.i("FirebaseLogin", "Logging in");
+                        fullName = curUser.fullname;
+                        if (fullName.equals("failed")){
+                            Toast.makeText(MainActivity.this,"Oh no! We lost you :(. Please relog!", Toast.LENGTH_SHORT);
+                        }
+                        ninja = curUser.ninja.equals("true");
+                        Toast.makeText(MainActivity.this, "You've been logged in as " + fullName, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {}
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {}
@@ -275,9 +272,9 @@ public class MainActivity extends Activity {
                     Toast.makeText(MainActivity.this, "Authentication failed :(", Toast.LENGTH_SHORT).show();
                     userLogin();
                 } else {
-                userRef.child(username).setValue(new User(fullName,username,String.valueOf(ninja)));
-                MainActivity.this.getSharedPreferences("OlinJa",MODE_PRIVATE).edit().putString("userId", username).commit();
-                Toast.makeText(MainActivity.this, "Authentication success :)", Toast.LENGTH_SHORT).show();
+                    userRef.setValue(new User(fullName, username, String.valueOf(ninja)));
+                    MainActivity.this.getSharedPreferences("OlinJa",MODE_PRIVATE).edit().putString("userId", username).commit();
+                    Toast.makeText(MainActivity.this, "Authentication success :)", Toast.LENGTH_SHORT).show();
                 }
             }
         }.execute();

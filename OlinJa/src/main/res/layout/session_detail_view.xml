@@ -21,13 +21,12 @@
         android:text="@string/session_title_checkoff"
         android:background="@color/olin_blue"
         />
-    <ImageButton
+    <Button
         android:id = "@+id/checkoff_add_queue"
-        android:layout_marginTop="2dp"
-        android:layout_marginRight="10dp"
         android:layout_toLeftOf="@id/center_on_me"
-        android:layout_width = "30dp"
-        android:layout_height = "30dp"
+        android:layout_width = "@dimen/add_button_size"
+        android:layout_height = "@dimen/add_button_size"
+        android:layout_margin = "@dimen/button_margin"
         android:background="@drawable/plus" />
     <ListView
         android:id="@+id/session_list_checkoff"
@@ -51,13 +50,12 @@
         android:background="@color/olin_lightblue"
         />
 
-    <ImageButton
+    <Button
         android:id = "@+id/helpMe_add_queue"
         android:layout_alignParentRight="true"
-        android:layout_width = "30dp"
-        android:layout_height = "30dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginRight="10dp"
+        android:layout_width = "@dimen/add_button_size"
+        android:layout_height = "@dimen/add_button_size"
+        android:layout_margin = "@dimen/button_margin"
         android:background="@drawable/plus"
         />
     <ListView
