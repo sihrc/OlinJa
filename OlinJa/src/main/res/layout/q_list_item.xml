@@ -10,6 +10,16 @@
         android:layout_height = "wrap_content"
         android:text="@string/session_example_title"
         android:textSize="@dimen/session_font"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        />
+
+    <Button
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:text="@string/check_off"
+        android:textSize="@dimen/session_font"
+        android:layout_alignParentRight="true"
+        android:layout_margin="5dp"
         />
 
 </RelativeLayout>
