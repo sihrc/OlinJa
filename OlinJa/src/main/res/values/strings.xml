@@ -4,6 +4,9 @@
     <string name="app_name">OlinJa</string>
     <string name="action_settings">Settings</string>
 
+    <string name="all_session_list">All Ninja Sessions</string>
+
+
     <string name="session_example_title">Diagnostic II</string>
     <string name="session_example_ninja">ModCon Bear</string>
     <string name="session_example_place">WH2AL</string>

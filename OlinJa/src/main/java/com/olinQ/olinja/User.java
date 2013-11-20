@@ -6,7 +6,7 @@ package com.olinQ.olinja;
 public class User {
     String fullName, username;
     Boolean ninja;
-    public User(){};
+
     public User(String fullName, String username, Boolean ninja){
         this.fullName = fullName;
         this.username = username;

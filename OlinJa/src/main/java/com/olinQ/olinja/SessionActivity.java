@@ -135,7 +135,7 @@ public class SessionActivity extends Activity {
                     else
                         pushref = helpRef.push();
                     String name = pushref.getName();
-                    pushref.setValue(new User(username,name));
+                    pushref.setValue(new User(username,name, false));
 
                     //Recording queue Id
                     getSharedPreferences("OlinJa", 0).edit().putString("queue", name).commit();
@@ -197,13 +197,13 @@ public class SessionActivity extends Activity {
         User curItem;
         if (mode.equals("check")){ //Moves from the check off to checked off
             curItem = ((User)checkoffAdapter.getItem(position));
-            checkRef.child(sessionId).child(curItem.getId()).removeValue();
+            checkRef.child(sessionId).child(curItem.getFullName()).removeValue();
             pushref = checkedRef.push();
             pushref.setValue(curItem);
 
         } else { //Moves from helpme to checked off
             curItem = ((User)helpmeAdapter.getItem(position));
-            helpRef.child(sessionId).child(curItem.getId()).removeValue();
+            helpRef.child(sessionId).child(curItem.getFullName()).removeValue();
             pushref = checkedRef.push();
             pushref.setValue(curItem);
         }
