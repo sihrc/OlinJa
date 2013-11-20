@@ -24,4 +24,15 @@
         android:layout_width = "match_parent"
         android:layout_height = "1dp"
         android:background = "@color/olin_lightblue"/>
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background = "@android:color/transparent"
+        android:text="Cancel" />
+    <View
+        android:layout_width = "match_parent"
+        android:layout_height = "1dp"
+        android:background = "@color/olin_lightblue"/>
+
 </LinearLayout>

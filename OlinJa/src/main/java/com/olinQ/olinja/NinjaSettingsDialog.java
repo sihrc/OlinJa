@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 /**
  * Created by chris on 11/13/13.
@@ -20,8 +21,11 @@ public class NinjaSettingsDialog extends AlertDialog {
     }
 
     public void onCreate(Bundle savedInstanceState){
-        setButton(BUTTON_POSITIVE, "Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {dialog.dismiss();}});
+        Button cancel = (Button)findViewById(R.id.cancel);
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { dismiss();}});
 
 
         findViewById(R.id.get_checked_off_list).setOnClickListener(new View.OnClickListener() {

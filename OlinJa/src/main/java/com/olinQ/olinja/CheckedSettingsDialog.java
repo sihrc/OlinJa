@@ -40,17 +40,19 @@ public class CheckedSettingsDialog extends AlertDialog {
     }
 
     public void onCreate(Bundle savedInstanceState){
-        setTitle("Settings");
-        setButton(BUTTON_POSITIVE,"Yes", new DialogInterface.OnClickListener() {
+        Button save = (Button)findViewById(R.id.save_question);
+        Button cancel = (Button)findViewById(R.id.cancel_question);
+
+        save.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View view) {
                 curUser.canhelp = "true";
                 checkRef.child(username).setValue(curUser);
                 Toast.makeText(getContext(), "You're available!", Toast.LENGTH_SHORT).show();
             }});
-        setButton(BUTTON_NEGATIVE,"No",  new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                         curUser.canhelp = "false";
                         checkRef.child(username).setValue(curUser);
                         Toast.makeText(getContext(), "You're not available.", Toast.LENGTH_SHORT).show();
