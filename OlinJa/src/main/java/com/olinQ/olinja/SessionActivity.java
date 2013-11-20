@@ -192,8 +192,8 @@ public class SessionActivity extends Activity {
                     in.putExtra("id",name);
                     in.putExtra("mode", mode);
                     in.putExtra("session", sessionId);
-                    startService(in);*/
-                }
+                    startService(in);
+                }*/
             }
         };
     }
