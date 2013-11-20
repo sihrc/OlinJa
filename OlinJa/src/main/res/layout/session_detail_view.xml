@@ -16,18 +16,19 @@
         android:padding="@dimen/session_title_padding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
+        android:textColor="@color/olin_white"
         android:textSize="@dimen/session_title_font"
         android:text="@string/session_title_checkoff"
+        android:background="@color/olin_blue"
         />
-    <TextView
+    <ImageButton
         android:id = "@+id/checkoff_add_queue"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="10dp"
         android:layout_toLeftOf="@id/center_on_me"
-        android:layout_width = "wrap_content"
-        android:padding = "@dimen/session_title_padding"
-        android:layout_height = "wrap_content"
-        android:textSize = "@dimen/session_title_font"
-        android:text = "@string/add_queue"/>
+        android:layout_width = "30dp"
+        android:layout_height = "30dp"
+        android:background="@drawable/plus" />
     <ListView
         android:id="@+id/session_list_checkoff"
         android:layout_below = "@id/session_title_checkoff"
@@ -35,7 +36,6 @@
         android:layout_alignRight = "@id/center_on_me"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/session_panel_checkoff"
         />
 
     <TextView
@@ -48,16 +48,18 @@
         android:textColor="@android:color/black"
         android:textSize="@dimen/session_title_font"
         android:text="@string/session_title_helpMe"
+        android:background="@color/olin_lightblue"
         />
 
-    <TextView
+    <ImageButton
         android:id = "@+id/helpMe_add_queue"
         android:layout_alignParentRight="true"
-        android:layout_width = "wrap_content"
-        android:padding = "@dimen/session_title_padding"
-        android:layout_height = "wrap_content"
-        android:textSize = "@dimen/session_title_font"
-        android:text = "@string/add_queue"/>
+        android:layout_width = "30dp"
+        android:layout_height = "30dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/plus"
+        />
     <ListView
         android:id="@+id/session_list_helpMe"
         android:layout_below = "@id/session_title_helpMe"
@@ -65,7 +67,6 @@
         android:layout_alignLeft = "@id/center_on_me"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/session_panel_helpMe"
         />
 </RelativeLayout>
 

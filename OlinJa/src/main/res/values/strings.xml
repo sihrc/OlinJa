@@ -6,7 +6,6 @@
 
     <string name="all_session_list">All Ninja Sessions</string>
 
-
     <string name="session_example_title">Diagnostic II</string>
     <string name="session_example_ninja">ModCon Bear</string>
     <string name="session_example_place">WH2AL</string>
@@ -38,6 +37,7 @@
     <string name="student">Student</string>
     <string name="login_ninja">Ninja</string>
     <string name="button_text">I am a:</string>
+    <string name="check_off">Check off</string>
 
     <string name="signin_main">Network Credentials</string>
     <string name="signin_user">Windows Login</string>
