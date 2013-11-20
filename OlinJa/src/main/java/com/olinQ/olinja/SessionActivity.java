@@ -188,6 +188,8 @@ public class SessionActivity extends Activity {
 
     //Show Ninja Settings
     public void showNinjaSettings(){
+        AlertDialog dialog = new NinjaSettingsDialog(SessionActivity.this);
+
         //Inflate Dialog View
         final View view = SessionActivity.this.getLayoutInflater().inflate(R.layout.ninja_click_dialog,null);
 
