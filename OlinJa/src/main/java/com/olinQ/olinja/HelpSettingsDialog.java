@@ -33,8 +33,6 @@ public class HelpSettingsDialog extends AlertDialog {
     }
 
     public void onCreate(Bundle savedInstanceState){
-        setTitle("What do you need help with?");
-
         Button save = (Button)findViewById(R.id.save_question);
         Button cancel = (Button)findViewById(R.id.cancel_question);
 

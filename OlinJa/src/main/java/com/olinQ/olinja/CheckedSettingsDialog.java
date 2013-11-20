@@ -40,7 +40,6 @@ public class CheckedSettingsDialog extends AlertDialog {
     }
 
     public void onCreate(Bundle savedInstanceState){
-        setTitle("Settings");
         setButton(BUTTON_POSITIVE,"Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

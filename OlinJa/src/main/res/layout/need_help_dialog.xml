@@ -19,7 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background = "@android:color/transparent"
-        android:align_below="@+id/settings_title"
         android:text="Leave the Queue" />
     <View
         android:layout_width = "match_parent"
