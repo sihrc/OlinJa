@@ -5,11 +5,24 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id = "@+id/all_session_title"
+        android:background="@color/olin_blue"
+        android:textColor="#fdfdfd"
+        android:layout_width = "fill_parent"
+        android:padding = "@dimen/session_title_padding"
+        android:layout_height = "wrap_content"
+        android:textSize = "@dimen/session_title_font"
+        android:text = "@string/all_session_list"/>
+
+
     <ListView
         android:id = "@+id/session_list"
         android:layout_height = "match_parent"
         android:layout_width = "match_parent"
         android:divider="@color/divider_color"
+        android:padding="@dimen/activity_vertical_margin"
+        android:layout_below="@+id/all_session_title"
         />
 
 </RelativeLayout>
