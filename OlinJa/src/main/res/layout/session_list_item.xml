@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_marginTop = "5dp"
     android:paddingBottom="0dp"
     android:id = "@+id/container_session"
     >
+
+    <View
+        android:layout_height = "80dp"
+        android:layout_width = "70dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/olin_lightblue"
+        />
+
     <ImageView
         android:id = "@+id/ninja_profile"
         android:layout_height = "80dp"
-        android:layout_width = "80dp"
+        android:layout_width = "70dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="5dp"
-        android:paddingTop = "5dp"
         android:paddingBottom = "5dp"
-        android:layout_marginRight="5dp"
+        android:paddingTop= "5dp"
         />
 
     <TextView
@@ -21,10 +29,11 @@
         android:layout_toRightOf="@id/ninja_profile"
         android:layout_alignTop="@id/ninja_profile"
         android:layout_width = "fill_parent"
-        android:background="@android:color/holo_blue_dark"
+        android:background="@color/olin_lightblue"
         android:layout_height = "wrap_content"
         android:textColor="@color/olin_white"
         android:paddingBottom="5dp"
+        android:paddingTop = "5dp"
         android:paddingLeft = "10dp"
         android:text="@string/session_example_title"
         android:textSize="24sp"
@@ -49,10 +58,13 @@
         android:layout_height="wrap_content"
         android:layout_alignRight = "@id/session_ninja"
         android:layout_marginRight = "5dp"
+        android:layout_marginLeft = "10dp"
         android:layout_alignLeft="@id/session_title"
         android:layout_below="@id/session_title"
         android:textSize = "@dimen/session_font"
         android:background="@android:color/white"
+        android:paddingTop = "5dp"
+        android:text = "sample sample sample"
         android:textColor = "@android:color/black"/>
     <View
         android:id="@+id/session_end"

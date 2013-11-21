@@ -30,11 +30,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-import com.firebase.client.utilities.Base64;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.net.URL;
 
 /**
  * Created by chris on 11/17/13.
@@ -151,6 +147,8 @@ public class SessionActivity extends Activity {
         //Add click listeners
         checkAdd.setOnClickListener(addToQueue("check"));
         helpAdd.setOnClickListener(addToQueue("help"));
+        findViewById(R.id.session_title_checkoff).setOnClickListener(addToQueue("check"));
+        findViewById(R.id.session_title_helpMe).setOnClickListener(addToQueue("help"));
     }
 
     @Override
@@ -198,7 +196,7 @@ public class SessionActivity extends Activity {
         if (!inQueue){
             new AlertDialog.Builder(SessionActivity.this)
                     .setTitle("Get in Line!")
-                    .setMessage("Which line would you like to queue up in? You only get to choose 1 at a time!")
+                    .setMessage("Whicht line would you like to queue up in? You only get to choose 1 at a time!")
                     .setPositiveButton("I need help", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -226,7 +224,7 @@ public class SessionActivity extends Activity {
             @Override
             public void onClick(View v) {
             Firebase pushref;
-            if (ninja) {Toast.makeText(SessionActivity.this, "Hey, you're a ninja! YOU DON'T NEED HELP D:",Toast.LENGTH_SHORT).show(); return;}
+            if (ninja) {Toast.makeText(SessionActivity.this, "Hey, you're a ninja! D:",Toast.LENGTH_SHORT).show(); return;}
             if (inQueue){
                 Toast.makeText(SessionActivity.this, "Hey! You can't line up twice.", Toast.LENGTH_SHORT).show(); return;
             }

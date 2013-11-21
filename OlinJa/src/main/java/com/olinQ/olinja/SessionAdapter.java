@@ -32,7 +32,7 @@ public class SessionAdapter extends FireBaseAdapter<Session> {
         Random rand = new Random(Double.doubleToLongBits(Math.random()));
         title.setText(session.assignment);
         ninja.setText(session.ninja);
-        details.setText(session.place + "-" +  session.time);
+        details.setText(session.place + " - " +  session.time);
 
         if (session.picture.equals("")){
             profile.setImageResource(R.drawable.unknown);
