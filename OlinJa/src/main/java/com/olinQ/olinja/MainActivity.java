@@ -88,6 +88,31 @@ public class MainActivity extends Activity {
                 startActivity(in);
             }
         });
+        //Long click delete
+        sessionList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final Session session = (Session) sessionAdapter.getItem(position);
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Delete")
+                        .setMessage("Are you sure?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                sessionRef.child(session.id).removeValue();
+                                Toast.makeText(MainActivity.this,"Successfully deleted session.", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
+                return false;
+            }
+        });
 
         //Connectivity Check
         connected = sessionRef.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
@@ -151,7 +176,7 @@ public class MainActivity extends Activity {
 
     //User Authentication Methods
     public void checkIfUser(){
-        Log.i("SavedId",getSharedPreferences("OlinJa", MODE_PRIVATE).getString("userId",""));
+        Log.i("SavedId",getSharedPreferences("OlinJa", MODE_PRIVATE).getString("userId","failed"));
         username = getSharedPreferences("OlinJa", MODE_PRIVATE).getString("userId","failed");
         if (username.equals("failed")){
             userLogin();
@@ -164,6 +189,7 @@ public class MainActivity extends Activity {
     }
     public void getFirebaseUserInfo(){
         userRef = new Firebase(FIREBASE_URL).child("users").child(username);
+        Log.i("username", username);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

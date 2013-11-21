@@ -85,7 +85,7 @@ public class CheckedOffActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()){
             case R.id.action_export:
-                Toast.makeText(CheckedOffActivity.this, "Checked List sucessfully exported to gradesheet.", Toast.LENGTH_SHORT).show(); 
+                Toast.makeText(CheckedOffActivity.this, "Checked List sucessfully exported to gradesheet.", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }

@@ -43,7 +43,7 @@ public class SessionDialog extends AlertDialog {
         date = (TextView) findViewById(R.id.dialog_input_date);
         time = (TextView) findViewById(R.id.dialog_input_time);
         duration = (TextView) findViewById(R.id.dialog_input_duration);
-        populateFakeData();
+        //populateFakeData();
         Button cancel = (Button) findViewById(R.id.dialog_cancel);
         Button create = (Button) findViewById(R.id.dialog_create);
 
@@ -73,7 +73,10 @@ public class SessionDialog extends AlertDialog {
                     Toast.makeText(getContext(), "Choose a time!", Toast.LENGTH_LONG).show();
                 } else if (newSession.duration.equals("")){
                     Toast.makeText(getContext(), "Choose a duration!", Toast.LENGTH_LONG).show();
-                } else {
+                } else if (newSession.place.equals("") || newSession.assignment.equals("") ){
+                    Toast.makeText(getContext(), "Please fill in the fields :(!", Toast.LENGTH_LONG).show();
+                }
+                else {
                     addSessionToServer(newSession);
                     Toast.makeText(getContext(), "Session created! You're such a nice person!", Toast.LENGTH_SHORT).show();
                     dismiss();
