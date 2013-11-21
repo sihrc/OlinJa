@@ -25,7 +25,7 @@ public class CheckedOffActivity extends Activity {
     ValueEventListener connected;
 
     //Firebase URL Location
-    String FIREBASE_URL = "https://olinja-base.firebaseio.com";
+    String FIREBASE_URL = "https://olinja-base.firebaseio.com/checked";
     Firebase checkedRef;
 
     @Override
@@ -35,10 +35,11 @@ public class CheckedOffActivity extends Activity {
 
         //Grab id
         Intent in = getIntent();
-        String id = in.getStringExtra("id");
-
+        String id = in.getStringExtra("sessionId");
+        getSharedPreferences("OlinJa", MODE_PRIVATE).edit().putString("sessionId", id).commit();
+        setResult(1, in);
         //Setup Firebase Reference
-        checkedRef = new Firebase(FIREBASE_URL + "/" + id);
+        checkedRef = new Firebase(FIREBASE_URL).child(id);
     }
 
     @Override

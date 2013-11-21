@@ -26,15 +26,5 @@ public class NinjaSettingsDialog extends AlertDialog {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) { dismiss();}});
-
-
-        findViewById(R.id.get_checked_off_list).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent in = new Intent(getContext(), CheckedOffActivity.class);
-                getContext().startActivity(in);
-                dismiss();
-            }
-        });
     }
 }

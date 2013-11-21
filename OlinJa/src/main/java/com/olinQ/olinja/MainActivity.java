@@ -85,6 +85,7 @@ public class MainActivity extends Activity {
                 Intent in = new Intent (MainActivity.this, SessionActivity.class);
                 in.putExtra("id", ((Session)sessionAdapter.getItem(position)).id);
                 in.putExtra("username", username);
+                getSharedPreferences("OlinJa", MODE_PRIVATE).edit().putString("userId", username).commit();
                 startActivity(in);
             }
         });
