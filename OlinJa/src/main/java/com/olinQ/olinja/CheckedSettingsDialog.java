@@ -40,8 +40,8 @@ public class CheckedSettingsDialog extends AlertDialog {
     }
 
     public void onCreate(Bundle savedInstanceState){
-        Button save = (Button)findViewById(R.id.save_question);
-        Button cancel = (Button)findViewById(R.id.cancel_question);
+        Button save = (Button)findViewById(R.id.available_help);
+        Button cancel = (Button)findViewById(R.id.notavailable_help);
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +49,7 @@ public class CheckedSettingsDialog extends AlertDialog {
                 curUser.canhelp = "true";
                 checkRef.child(username).setValue(curUser);
                 Toast.makeText(getContext(), "You're available!", Toast.LENGTH_SHORT).show();
+                dismiss();
             }});
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +57,7 @@ public class CheckedSettingsDialog extends AlertDialog {
                         curUser.canhelp = "false";
                         checkRef.child(username).setValue(curUser);
                         Toast.makeText(getContext(), "You're not available.", Toast.LENGTH_SHORT).show();
+                        dismiss();
                     }});
         findViewById(R.id.leave_queue).setOnClickListener(new View.OnClickListener() {
             @Override

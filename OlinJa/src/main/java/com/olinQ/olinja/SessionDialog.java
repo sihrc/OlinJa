@@ -24,16 +24,17 @@ import java.util.Locale;
  */
 public class SessionDialog extends AlertDialog {
 
-    String user;
+    String user, ninjaPicture;
     Context context;
 
     EditText assignment, place;
     TextView date,time,duration;
-    public SessionDialog(Context context, String user){
+    public SessionDialog(Context context, String user, String ninjaPicture){
         super(context);
         setContentView(R.layout.add_session_dialog);
         this.context = context;
         this.user = user;
+        this.ninjaPicture = ninjaPicture;
     }
 
     public void onCreate(Bundle savedInstanceState){
@@ -45,6 +46,7 @@ public class SessionDialog extends AlertDialog {
         populateFakeData();
         Button cancel = (Button) findViewById(R.id.dialog_cancel);
         Button create = (Button) findViewById(R.id.dialog_create);
+
 
         setupDateTimePickers();
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +64,8 @@ public class SessionDialog extends AlertDialog {
                     place.getText().toString(),
                     time.getText().toString(),
                     duration.getText().toString(),
-                    date.getText().toString()
+                    date.getText().toString(),
+                    ninjaPicture
                 );
                 if (newSession.date.equals("")){
                     Toast.makeText(getContext(), "Choose a date!", Toast.LENGTH_LONG).show();

@@ -26,8 +26,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin = "5dp"
-        android:textSize = "@dimen/session_sub_font"
+        android:padding = "5dp"
+        android:textColor = "@color/olin_white"
+        android:background = "@color/olin_blue"
+        android:textSize = "@dimen/session_font"
         android:text = "Are you available for help?"/>
     <View
         android:layout_width = "match_parent"
@@ -39,28 +41,28 @@
         android:gravity="center_horizontal">
 
         <Button
-            android:id="@+id/save_question"
+            android:id="@+id/notavailable_help"
             android:gravity = "center"
             android:layout_height = "@dimen/button_height"
             android:layout_width = "@dimen/button_width"
             android:background = "@android:color/transparent"
-            android:text="Save Question"/>
+            android:text="No"/>
         <View
             android:id = "@+id/button_divider"
             android:layout_marginTop = "@dimen/divider_top"
             android:layout_width = "@dimen/divider_height"
-            android:layout_toRightOf = "@id/save_question"
+            android:layout_toRightOf = "@id/notavailable_help"
             android:layout_height = "@dimen/button_divider"
             android:background = "@android:color/black"
             />
         <Button
-            android:id="@+id/cancel_question"
+            android:id="@+id/available_help"
             android:gravity = "center"
             android:layout_height = "@dimen/button_height"
             android:layout_width = "@dimen/button_width"
             android:background = "@android:color/transparent"
             android:layout_toRightOf = "@id/button_divider"
-            android:text="Cancel"/>
+            android:text="Yes"/>
     </RelativeLayout>
 
 </LinearLayout>

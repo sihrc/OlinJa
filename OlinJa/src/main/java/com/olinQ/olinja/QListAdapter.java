@@ -1,8 +1,11 @@
 package com.olinQ.olinja;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +25,7 @@ public class QListAdapter extends FireBaseAdapter<User> {
 
     @Override
     protected void populateView(View view, final User queueItem){
+
         //Grabbing Views
         TextView person = (TextView) view.findViewById(R.id.person_name);
         TextView help = (TextView) view.findViewById(R.id.help_text);
@@ -30,7 +34,6 @@ public class QListAdapter extends FireBaseAdapter<User> {
 
         //Set the name
         person.setText(queueItem.fullname);
-        profile.setImageResource(R.drawable.unknown);
         //Setting help and helpLight
         if (queueItem.needhelp.equals("false")){ //If person does not need help / is in check off queue
             helpLight.setVisibility(View.VISIBLE);
@@ -39,7 +42,7 @@ public class QListAdapter extends FireBaseAdapter<User> {
                 help.setText("Away");}
             else{
                 helpLight.setImageResource(R.drawable.green_help);
-                help.setText("Available to help!");
+                help.setText("I can help!");
             }
         } else { //Person needs help is in help line
             if (queueItem.needhelp.equals("true")){
@@ -53,8 +56,11 @@ public class QListAdapter extends FireBaseAdapter<User> {
             }
             helpLight.setVisibility(View.GONE);
         }
-
         //Find the profile picture and set to view in asyncTask;
+        if (queueItem.picture.equals("")){
+            profile.setImageResource(R.drawable.unknown);
+        }
+        if (profile.getDrawable() == null){
         new AsyncTask<Void, Void, Drawable>(){
             protected Drawable doInBackground(Void... voids){
                 return LoadImageFromWebOperations(queueItem.picture);
@@ -63,14 +69,14 @@ public class QListAdapter extends FireBaseAdapter<User> {
                 profile.setImageDrawable(draw);
             }
         }.execute();
+        }
     }
-
 
 
     //Grab profile picture
     public static Drawable LoadImageFromWebOperations(String url) {
         try {
-        return Drawable.createFromStream((InputStream) new URL("http://www.olinapps.com/" + url).getContent(), "src name");
+            return Drawable.createFromStream((InputStream) new URL("http://www.olinapps.com/" + url).getContent(), "src name");
         } catch (Exception e) {e.printStackTrace();return null;}
     }
 }

@@ -31,7 +31,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
+
 
 public class MainActivity extends Activity {
     //For managing the list view of sessions
@@ -115,7 +115,7 @@ public class MainActivity extends Activity {
 
     //Dialog for adding a session
     public void showAddSessionDialog(){
-        SessionDialog showDialog = new SessionDialog(MainActivity.this, fullName);
+        SessionDialog showDialog = new SessionDialog(MainActivity.this, fullName, curUser.picture);
         showDialog.show();
     }
 
@@ -287,4 +287,3 @@ public class MainActivity extends Activity {
         }.execute();
     }
 }
-

@@ -2,13 +2,16 @@ package com.olinQ.olinja;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -17,7 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +30,11 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-import com.firebase.client.snapshot.Node;
+import com.firebase.client.utilities.Base64;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  * Created by chris on 11/17/13.
@@ -76,25 +83,20 @@ public class SessionActivity extends Activity {
         setContentView(R.layout.activity_session);
 
         //Grab sessionId from MainActivity
-        Log.i("Debugger", "onCreate");
         Intent in = getIntent();
         sessionId = in.getStringExtra("id");
         username = in.getStringExtra("username");
 
-        Log.i("Debugger", "Intent received");
-
         //Setup Firebase Reference
-        checkedRef = new Firebase(CHECKED_URL + "/" + sessionId);
-        checkRef = new Firebase(CHECK_URL + "/" + sessionId);
-        helpRef = new Firebase(HELP_URL + "/" + sessionId);
-        checkRefAdapter = new Firebase(CHECK_URL + "/" + sessionId);
-        helpRefAdapter = new Firebase(HELP_URL + "/" + sessionId);
-        userRef = new Firebase(USER_URL + "/" + username);
+        checkedRef = new Firebase(CHECKED_URL).child(sessionId);
+        checkRef = new Firebase(CHECK_URL).child(sessionId);
+        helpRef = new Firebase(HELP_URL).child(sessionId);
+        checkRefAdapter = new Firebase(CHECK_URL).child(sessionId);
+        helpRefAdapter = new Firebase(HELP_URL).child(sessionId);
+        userRef = new Firebase(USER_URL).child(username);
 
-        Log.i("Debugger", "Firebase References Set-Up");
         //Get User Information
         getFirebaseUserInfo();
-        Log.i("Debugger", "FireBaseUserInfo");
     }
 
     @Override
@@ -192,7 +194,6 @@ public class SessionActivity extends Activity {
 
     //Show User Settings
     public void showUserSettings(){
-        Log.i("InQueue?", String.valueOf(inQueue));
         //NOT IN QUEUE YET
         if (!inQueue){
             new AlertDialog.Builder(SessionActivity.this)
@@ -253,14 +254,9 @@ public class SessionActivity extends Activity {
     }
 
     //ListView OnClickListener
-    public View.OnClickListener selectUser(final int position, final String mode){
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ninja) showNinjaSelect(position, mode);
-                else showUserSelect(position, mode);
-              }
-            };
+    public void selectUser(final int position, final String mode){
+        if (ninja) showNinjaSelect(position, mode);
+        else{showUserSelect(position, mode);}
     }
 
 
@@ -330,8 +326,7 @@ public class SessionActivity extends Activity {
         if (message.equals("true")){
             message = "I haven't specified what I need help on.";
         }
-
-        if (mode.equals("help"))
+        if (mode.equals("help")){
             new AlertDialog.Builder(SessionActivity.this)
                     .setTitle("Details")
                     .setMessage(message)
@@ -341,6 +336,24 @@ public class SessionActivity extends Activity {
                             dialog.dismiss();
                         }
                     }).show();
+        } else if (mode.equals("check") && username.equals(((User)checkoffAdapter.getItem(position)).username)){
+            new AlertDialog.Builder(SessionActivity.this)
+                    .setTitle("Leave Queue?")
+                    .setMessage("Are you sure?")
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            checkRef.child(username).removeValue();
+                            dialog.dismiss();
+                        }
+                    });
+        }
     }
 
     //Check off Ninjee
@@ -369,10 +382,8 @@ public class SessionActivity extends Activity {
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.i("Debugger Username", username);
                 if (username.equals(dataSnapshot.getValue(User.class).username)) {
                     curUser = dataSnapshot.getValue(User.class);
-                    Log.i("Debugger", curUser.username);
                     fullname = curUser.fullname;
                     ninja = curUser.ninja.equals("true");
                 }
@@ -388,10 +399,9 @@ public class SessionActivity extends Activity {
     public void checkInQueue(){
         Firebase checkQueue = new Firebase(CHECK_URL).child(username);
         Firebase helpQueue = new Firebase(HELP_URL).child(username);
-
         //Checks if you're second in queue
         checkRef.addChildEventListener(checkQueue());
-        helpQueue.addChildEventListener(checkQueue());
+        helpRef.addChildEventListener(checkQueue());
 
         //Checks for changes in Queue Status
         checkQueue.addValueEventListener(new ValueEventListener() {
@@ -437,33 +447,23 @@ public class SessionActivity extends Activity {
         return new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if (s == null)
-                    before = dataSnapshot.getName();
-                else if (s.equals(before) && dataSnapshot.getName().equals(username)){
-                        notifyUser();}
+                check(dataSnapshot,s);
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                if (s == null)
-                    before = dataSnapshot.getName();
-                else{
-                    if (s.equals(before) && dataSnapshot.getName().equals(username))
-                        notifyUser();}
+                check(dataSnapshot,s);
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                inQueue = dataSnapshot.getName().equals(username);
+                Log.i("What happening", dataSnapshot.getName());
+                inQueue = !dataSnapshot.getName().equals(username);
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                if (s == null)
-                    before = dataSnapshot.getName();
-                else{
-                    if (s.equals(before) && dataSnapshot.getName().equals(username))
-                        notifyUser();}
+                check(dataSnapshot,s);
             }
 
             @Override
@@ -471,6 +471,17 @@ public class SessionActivity extends Activity {
 
             }
         };
+    }
+
+    public void check(DataSnapshot dataSnapshot, String s){
+        if (s == null){
+            inQueue = false;
+            before = dataSnapshot.getName();}
+        else if (s.equals(before) && dataSnapshot.getName().equals(username)){
+            notifyUser();}
+        if (dataSnapshot.getName().equals(username)){
+            inQueue = true;
+        }
     }
     public void notifyUser(){
         NotificationCompat.Builder notification = new NotificationCompat.Builder(this);
@@ -488,5 +499,6 @@ public class SessionActivity extends Activity {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(0,notification.build());
     }
+
 }
 

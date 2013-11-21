@@ -8,11 +8,11 @@ import java.util.GregorianCalendar;
  * Created by chris on 11/17/13.
  */
 public class Session {
-    String assignment,ninja,place,time,duration, date, id;
+    String assignment,ninja,place,time,duration, date, id, picture;
     long priority;
     
     public Session(){} //Required by firebase - don't remove!
-    public Session(String assignment, String ninja, String place, String time, String duration, String date){
+    public Session(String assignment, String ninja, String place, String time, String duration, String date, String picture){
         this.assignment = assignment;
         this.ninja = ninja;
         this.place = place;
@@ -20,6 +20,7 @@ public class Session {
         this.duration = duration;
         this.date = date;
         this.priority = getPriority();
+        this.picture = picture;
     }
 
     //Public Get Methods as required by Firebase
@@ -41,6 +42,7 @@ public class Session {
     public String getDate(){
         return this.date;
     }
+    public String getPicture(){return this.picture;}
     public String getId(){
         return this.id;
     }

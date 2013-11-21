@@ -13,6 +13,7 @@
         />
     <ImageView
         android:id="@+id/user_profile"
+        android:background = "@drawable/unknown"
         android:layout_marginLeft = "5dp"
         android:layout_height = "@dimen/profile_size"
         android:layout_width = "@dimen/profile_size"
@@ -48,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft = "@id/person_name"
-        android:layout_alignParentBottom="true"
+        android:layout_below = "@id/person_name"
         android:textSize = "@dimen/session_sub_font"
         android:text = "@string/dialog_title"/>
 </RelativeLayout>

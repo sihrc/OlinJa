@@ -7,4 +7,10 @@
         android:title="Settings"
         android:text="Settings"
         android:showAsAction="always"/>
+
+    <item android:id="@+id/picture"
+        android:orderInCategory="100"
+        android:title="Refresh Pictures"
+        android:text="Refresh Pictures"
+        android:showAsAction="never"/>
 </menu>
