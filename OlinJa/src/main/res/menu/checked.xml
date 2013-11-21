@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity" >
 
-    <item android:id="@+id/action_addSession"
+    <item android:id="@+id/action_export"
         android:orderInCategory="100"
         android:title="Export"
         android:text="Export"
