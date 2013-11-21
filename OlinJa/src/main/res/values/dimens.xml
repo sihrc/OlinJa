@@ -32,6 +32,7 @@
     <dimen name="help_button_size">20dp</dimen>
     <dimen name="login_title">5dp</dimen>
     <dimen name="profile_size">50dp</dimen>
+    <dimen name="profile_size_buffer">55dp</dimen>
 
     </resources>
 

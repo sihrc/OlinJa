@@ -225,26 +225,29 @@ public class SessionActivity extends Activity {
             @Override
             public void onClick(View v) {
             Firebase pushref;
-            if (!inQueue && !ninja){
-                if (mode.equals("check")){
-                    pushref = checkRef.child(username);
-                    curUser.canhelp = "false";
-                    curUser.needhelp = "false";
-                    Toast.makeText(SessionActivity.this, "I'll let you know when it's your turn! In the meantime, specify if you can help others in settings!", Toast.LENGTH_LONG).show();}
-                else{
-                    pushref = helpRef.child(username);
-                    curUser.needhelp = "true";
-                    Toast.makeText(SessionActivity.this, "I'll let you know when a ninja is ready for you. In the meantime, specify what question you need help on in settings.", Toast.LENGTH_LONG).show();
-                }
-                pushref.setValue(curUser);
-                inQueue = true;
+            if (ninja) {Toast.makeText(SessionActivity.this, "Hey, you're a ninja! YOU DON'T NEED HELP D:",Toast.LENGTH_SHORT).show(); return;}
+            if (inQueue){
+                Toast.makeText(SessionActivity.this, "Hey! You can't line up twice.", Toast.LENGTH_SHORT).show(); return;
+            }
+
+            if (mode.equals("check")){
+                pushref = checkRef.child(username);
+                curUser.canhelp = "false";
+                curUser.needhelp = "false";
+                Toast.makeText(SessionActivity.this, "I'll let you know when it's your turn! In the meantime, specify if you can help others in settings!", Toast.LENGTH_LONG).show();}
+            else{
+                pushref = helpRef.child(username);
+                curUser.needhelp = "true";
+                Toast.makeText(SessionActivity.this, "I'll let you know when a ninja is ready for you. In the meantime, specify what question you need help on in settings.", Toast.LENGTH_LONG).show();
+            }
+            pushref.setValue(curUser);
+            inQueue = true;
                 //Start Notification Service for when name in Queue is first.
                     /*Intent in = new Intent(SessionActivity.this, NotificationService.class);
                     in.putExtra("id",name);
                     in.putExtra("mode", mode);
                     in.putExtra("session", sessionId);
                     startService(in);*/
-                } else Toast.makeText(SessionActivity.this, "Hey! You can't line up twice.", Toast.LENGTH_SHORT).show();
             }
         };
     }
@@ -323,28 +326,18 @@ public class SessionActivity extends Activity {
     //User Select user Dialog
     public void showUserSelect(int position, final String mode){
         //Getting who is selected
-        if (mode.equals("check"))
-            selected = (User) checkoffAdapter.getItem(position);
-        else
-            selected = (User) helpmeAdapter.getItem(position);
+        String message = ((User)helpmeAdapter.getItem(position)).needhelp;
+        if (message.equals("true")){
+            message = "I haven't specified what I need help on.";
+        }
 
-        if (selected.username.equals(username))
+        if (mode.equals("help"))
             new AlertDialog.Builder(SessionActivity.this)
-                    .setTitle("Leave session?")
-                    .setMessage("Are you sure you want to remove yourself from the queue?")
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    .setTitle("Details")
+                    .setMessage(message)
+                    .setPositiveButton("Return", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (mode.equals("check"))
-                                checkRef.child(username).removeValue();
-                            else
-                                helpRef.child(username).removeValue();
                             dialog.dismiss();
                         }
                     }).show();

@@ -42,8 +42,16 @@ public class QListAdapter extends FireBaseAdapter<User> {
                 help.setText("Available to help!");
             }
         } else { //Person needs help is in help line
-            help.setText(queueItem.needhelp);
-            helpLight.setVisibility(View.INVISIBLE);
+            if (queueItem.needhelp.equals("true")){
+                help.setText("I need help ...");
+            }
+            else if (queueItem.needhelp.length() > 7){
+            help.setText(queueItem.needhelp.substring(0,7) + "...");
+            }
+            else {
+                help.setText(queueItem.needhelp);
+            }
+            helpLight.setVisibility(View.GONE);
         }
 
         //Find the profile picture and set to view in asyncTask;
