@@ -2,25 +2,19 @@ package com.olinQ.olinja;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,6 +66,7 @@ public class SessionActivity extends Activity {
 
     //Firebase References
     Firebase checkRef, helpRef, checkedRef, userRef, checkRefAdapter, helpRefAdapter;
+    Firebase checkQueue, helpQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -411,8 +406,8 @@ public class SessionActivity extends Activity {
 
     //Check if in Queue
     public void checkInQueue(){
-        Firebase checkQueue = new Firebase(CHECK_URL).child(username);
-        Firebase helpQueue = new Firebase(HELP_URL).child(username);
+        checkQueue = new Firebase(CHECK_URL).child(username);
+        helpQueue = new Firebase(HELP_URL).child(username);
         //Checks if you're second in queue
         checkRef.addChildEventListener(checkQueue());
         helpRef.addChildEventListener(checkQueue());
@@ -428,6 +423,7 @@ public class SessionActivity extends Activity {
                     inQueue =  (finding.username.equals(username));
                 }
                 if (inQueue && finding.notify.equals("true")){
+                    Log.i("I'm checking here", "I'm here");
                     notifyUser();
                     curUser.notify = "false";
                     checkRef.child(username).setValue(curUser);
@@ -498,16 +494,12 @@ public class SessionActivity extends Activity {
         }
     }
     public void notifyUser(){
-        NotificationCompat.Builder notification = new NotificationCompat.Builder(this);
-        notification.setSmallIcon(R.drawable.olinja).setContentTitle("You're up!").setContentText("You're next in line. Come quick!");
+        Notification.Builder notification = new Notification.Builder(this);
+        notification.setSmallIcon(R.drawable.olinja).setContentTitle("You're up!").setContentText("You're next in line. Come quick!").setAutoCancel(true);
 
         Intent resultIntent = new Intent(this, SessionActivity.class);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, 0);
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(SessionActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
-
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         notification.setContentIntent(resultPendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
